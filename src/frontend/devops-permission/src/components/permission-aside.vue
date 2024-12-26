@@ -127,5 +127,8 @@ const handleChangeMenu = (menu: any) => {
     .item-border {
       border-bottom: 1px solid #e4e4e4;
     }
+    .item-border {
+      border-bottom: 1px solid #e4e4e4;
+    }
   }
 </style>
