@@ -69,13 +69,13 @@
             </template>
         </bk-table-column>
         <bk-table-column
-            v-if="allRenderColumnMap.lastedVersion"
-            :width="tableWidthMap.lastedVersion"
-            :label="$t('template.lastedVersion')"
-            prop="lastedVersion"
+            v-if="allRenderColumnMap.releasedVersionName"
+            :width="tableWidthMap.releasedVersionName"
+            :label="$t('template.releasedVersionName')"
+            prop="releasedVersionName"
         >
             <template slot-scope="{ row }">
-                <span>{{ row.lastedVersion || '--' }}</span>
+                <span>{{ row.releasedVersionName || '--' }}</span>
             </template>
         </bk-table-column>
         <bk-table-column
@@ -264,8 +264,8 @@
                 label: i18n.t('template.type')
             },
             {
-                id: 'lastedVersion',
-                label: i18n.t('template.lastedVersion')
+                id: 'releasedVersionName',
+                label: i18n.t('template.releasedVersionName')
             },
             {
                 id: 'source',
@@ -302,7 +302,7 @@
                 { id: 'name' },
                 { id: 'desc' },
                 { id: 'type' },
-                { id: 'lastedVersion' },
+                { id: 'releasedVersionName' },
                 { id: 'source' },
                 { id: 'debugPipelineCount' },
                 { id: 'instancePipelineCount' },
@@ -315,7 +315,7 @@
             name: 220,
             desc: 200,
             type: 100,
-            lastedVersion: 80,
+            releasedVersionName: 80,
             source: 100,
             debugPipelineCount: 80,
             instancePipelineCount: '',
