@@ -71,7 +71,7 @@
         <bk-table-column
             v-if="allRenderColumnMap.releasedVersionName"
             :width="tableWidthMap.releasedVersionName"
-            :label="$t('template.releasedVersionName')"
+            :label="$t('template.lastedVersion')"
             prop="releasedVersionName"
         >
             <template slot-scope="{ row }">
