@@ -282,7 +282,7 @@ const routes = [
                 }
             },
             {
-                path: 'editTemplate/:templateId',
+                path: 'editTemplate/:templateId?',
                 name: 'editTemplate',
                 component: editTemplate,
                 meta: {
