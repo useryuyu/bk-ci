@@ -77,6 +77,20 @@
                 />
             </form-field>
 
+            <form-field
+                :hide-colon="true"
+                :label="$t('groupLabel')"
+            >
+                <select-input
+                    :value="param.category"
+                    name="category"
+                    :disabled="disabled"
+                    type="text"
+                    :options="groupLabelList"
+                    :handle-change="(name, value) => handleUpdateParam(name, value)"
+                />
+            </form-field>
+
             <template v-if="paramType !== 'constant'">
                 <div class="param-checkbox-row">
                     <atom-checkbox
@@ -113,6 +127,7 @@
 </template>
 
 <script>
+    import SelectInput from '@/components/AtomFormComponent/SelectInput/'
     import FormField from '@/components/AtomPropertyPanel/FormField'
     import AtomCheckbox from '@/components/atomFormField/AtomCheckbox'
     import Selector from '@/components/atomFormField/Selector'
@@ -120,8 +135,8 @@
     import VuexTextarea from '@/components/atomFormField/VuexTextarea'
     import validMixins from '@/components/validMixins'
     import { deepCopy } from '@/utils/util'
-    import ParamValueOption from './children/param-value-option'
     import { mapState } from 'vuex'
+    import ParamValueOption from './children/param-value-option'
 
     import {
         CONST_TYPE_LIST,
@@ -137,7 +152,8 @@
             VuexInput,
             AtomCheckbox,
             Selector,
-            VuexTextarea
+            VuexTextarea,
+            SelectInput
         },
         mixins: [validMixins],
         props: {
@@ -212,6 +228,22 @@
                 })
                 const variableList = list.filter(item => item.id !== 'CHECKBOX')
                 return this.paramType === 'constant' ? list.filter(item => CONST_TYPE_LIST.includes(item.id)) : variableList
+            },
+            groupLabelList () {
+                if (!Array.isArray(this.globalParams)) {
+                    return []
+                }
+                const ids = new Set()
+                return this.globalParams.reduce((uniqueItems, item) => {
+                    if (!ids.has(item.category)) {
+                        ids.add(item.category)
+                        uniqueItems.push({
+                            id: item.category,
+                            name: item.category
+                        })
+                    }
+                    return uniqueItems
+                }, [])
             }
         },
         created () {

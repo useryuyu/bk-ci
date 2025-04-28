@@ -10,19 +10,41 @@
             class="new-ui-form"
         >
             <bk-form-item
-                :label="$t('pipelineName')"
+                :label="nameLabel"
                 :required="true"
             >
                 <vuex-input
                     v-bk-focus
                     :disabled="!editable"
-                    :placeholder="$t('pipelineNameInputTips')"
+                    :placeholder="namePlaceholder"
                     name="pipelineName"
                     :value="pipelineSetting.pipelineName"
                     v-validate.initial="'required|max:128'"
                     :max-length="128"
                     :handle-change="handleBaseInfoChange"
                 />
+            </bk-form-item>
+            <bk-form-item
+                v-if="isTemplate"
+                :label="$t('template.type')"
+                disabled
+                :required="true"
+            >
+                <bk-radio-group
+                    :value="pipelineInfo?.type"
+                    disabled
+                >
+                    <bk-radio-button
+                        v-for="item in templateTypeList"
+                        :key="item.value"
+                        :value="item.value"
+                    >
+                        <span class="template-type-radio">
+                            <logo :name="item.icon" />
+                            {{ item.label }}
+                        </span>
+                    </bk-radio-button>
+                </bk-radio-group>
             </bk-form-item>
 
             <bk-form-item :required="false">
@@ -108,12 +130,15 @@
 <script>
     import VuexInput from '@/components/atomFormField/VuexInput/index.vue'
     import VuexTextarea from '@/components/atomFormField/VuexTextarea/index.vue'
+    import Logo from '@/components/Logo'
     import SyntaxStyleConfiguration from '@/components/syntaxStyleConfiguration'
-    import { mapGetters } from 'vuex'
+    import { TEMPLATE_TYPE } from '@/utils/pipelineConst'
+    import { mapGetters, mapState } from 'vuex'
 
     export default {
         name: 'bkdevops-base-info-setting-tab',
         components: {
+            Logo,
             VuexTextarea,
             VuexInput,
             SyntaxStyleConfiguration
@@ -132,9 +157,19 @@
             }
         },
         computed: {
+            ...mapState('atom', [
+                'pipelineInfo'
+            ]),
             ...mapGetters({
-                tagGroupList: 'pipelines/getTagGroupList'
+                tagGroupList: 'pipelines/getTagGroupList',
+                isTemplate: 'atom/isTemplate'
             }),
+            nameLabel () {
+                return this.isTemplate ? this.$t('template.name') : this.$t('pipelineName')
+            },
+            namePlaceholder () {
+                return this.isTemplate ? this.$t('template.nameInputTips') : this.$t('pipelineNameInputTips')
+            },
             projectId () {
                 return this.$route.params.projectId
             },
@@ -158,6 +193,15 @@
             },
             defaultPipelineDialect () {
                 return this.curProject?.properties?.pipelineDialect
+            },
+            templateTypeList () {
+                return Object.keys(TEMPLATE_TYPE).map((key) => {
+                    return {
+                        value: TEMPLATE_TYPE[key],
+                        label: this.$t(`template.${key}`),
+                        icon: `${TEMPLATE_TYPE[key].toLowerCase()}-template`
+                    }
+                })
             }
         },
         watch: {
@@ -238,6 +282,17 @@
         }
         .bk-form-content {
             max-width: 560px;
+            .bk-form-radio-button .bk-radio-button-text {
+                height: 44px;
+                line-height: 44px;
+            }
+            .template-type-radio {
+                display: flex;
+                align-items: center;
+                font-size: 12px;
+                cursor: pointer;
+                grid-gap: 6px;
+            }
         }
         .layout-label {
             width: 560px;

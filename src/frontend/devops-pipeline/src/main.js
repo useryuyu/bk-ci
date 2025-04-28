@@ -29,13 +29,13 @@ import focus from './directives/focus/index.js'
 import createRouter from './router'
 import store from './store'
 
+import createLocale from '@locale'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import PortalVue from 'portal-vue'; // eslint-disable-line
 import VeeValidate from 'vee-validate'
 import validationENMessages from 'vee-validate/dist/locale/en'
 import validationCNMessages from 'vee-validate/dist/locale/zh_CN'
-import createLocale from '@locale'
 import ExtendsCustomRules from './utils/customRules'
 import validDictionary from './utils/validDictionary'
 
@@ -49,7 +49,8 @@ import { BkPermission, PermissionDirective } from 'bk-permission'
 import 'bk-permission/dist/main.css'
 
 const { lang, i18n, setLocale } = createLocale(
-    require.context('@locale/pipeline/', false, /\.json$/)
+    require.context('@locale/pipeline/', false, /\.json$/),
+    Vue
 )
 const { pipelineDocs } = createDocs(lang, window.BK_CI_VERSION)
 const isInIframe = window.self !== window.parent
@@ -63,7 +64,6 @@ Vue.use(PermissionDirective(handlePipelineNoPermission))
 Vue.use(BkPermission, {
     i18n
 })
-
 Vue.use(VeeValidate, {
     i18nRootKey: 'validations', // customize the root path for validation messages.
     i18n,
@@ -129,8 +129,8 @@ if (!isInIframe) {
 global.pipelineVue = new Vue({
     el: "#app",
     router: createRouter(store, isInIframe),
-    i18n,
     store,
+    i18n,
     components: {
         App
     },

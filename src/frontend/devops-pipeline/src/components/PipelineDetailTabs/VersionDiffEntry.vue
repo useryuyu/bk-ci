@@ -9,7 +9,7 @@
             @click="initDiff"
         >
             <slot>
-                {{ $t('diff') }}
+                {{ !isTemplateInstance ? $t('diff') : $t('template.diff') }}
             </slot>
         </bk-button>
         <bk-dialog
@@ -71,7 +71,7 @@
 <script>
     import VersionSelector from '@/components/PipelineDetailTabs/VersionSelector'
     import YamlDiff from '@/components/YamlDiff'
-    import { mapActions } from 'vuex'
+    import { mapActions, mapGetters } from 'vuex'
     export default {
         components: {
             YamlDiff,
@@ -110,7 +110,8 @@
             disabled: {
                 type: Boolean,
                 default: false
-            }
+            },
+            type: String
         },
         data () {
             return {
@@ -123,16 +124,24 @@
                 pipelineVersionList: []
             }
         },
+        computed: {
+            ...mapGetters('atom', ['isTemplate']),
+            isTemplateInstance () {
+                return this.type === 'templateInstance' && this.isTemplate
+            }
+        },
 
         methods: {
             ...mapActions('atom', [
-                'fetchPipelineByVersion'
+                'fetchPipelineByVersion',
+                'fetchTemplateByVersion'
             ]),
+            ...mapActions('templates', ['requestVersionCompare']),
             async fetchPipelineYaml (version) {
                 try {
-                    const res = await this.fetchPipelineByVersion({
-                        projectId: this.$route.params.projectId,
-                        pipelineId: this.$route.params.pipelineId,
+                    const fn = this.isTemplate ? this.fetchTemplateByVersion : this.fetchPipelineByVersion
+                    const res = await fn({
+                        ...this.$route.params,
                         version
                     })
                     if (res?.yamlSupported) {
@@ -148,18 +157,43 @@
                     return ''
                 }
             },
+            async fetchTemplateInstanceYaml (versions) {
+                try {
+                    const res = await this.requestVersionCompare({
+                        ...this.$route.params,
+                        ...versions
+                    })
+                    return res.data
+                } catch (error) {
+                    this.$bkMessage({
+                        theme: 'error',
+                        message: error.message,
+                        zIndex: 3000
+                    })
+                    return ''
+                }
+            },
             async initDiff () {
                 this.activeVersion = this.version
                 this.currentVersion = this.latestVersion
                 this.showVersionDiffDialog = true
 
                 this.isLoadYaml = true
-                const [activeYaml, currentYaml] = await Promise.all([
-                    this.fetchPipelineYaml(this.activeVersion),
-                    this.fetchPipelineYaml(this.currentVersion)
-                ])
-                this.activeYaml = activeYaml
-                this.currentYaml = currentYaml
+                if (this.isTemplateInstance) {
+                    const { baseVersionResource, comparedVersionResource } = await this.fetchTemplateInstanceYaml({
+                        baseVersion: this.currentVersion,
+                        comparedVersion: this.activeVersion
+                    })
+                    this.activeYaml = comparedVersionResource.yaml
+                    this.currentYaml = baseVersionResource.yaml
+                } else {
+                    const [activeYaml, currentYaml] = await Promise.all([
+                        this.fetchPipelineYaml(this.activeVersion),
+                        this.fetchPipelineYaml(this.currentVersion)
+                    ])
+                    this.activeYaml = activeYaml
+                    this.currentYaml = currentYaml
+                }
                 this.isLoadYaml = false
             },
             async diffActiveVersion (version, old) {

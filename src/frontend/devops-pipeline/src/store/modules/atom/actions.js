@@ -24,7 +24,7 @@ import {
     STORE_API_URL_PREFIX,
     UPDATE_PIPELINE_MODE
 } from '@/store/constants'
-import { UI_MODE, CODE_MODE } from '@/utils/pipelineConst'
+import { CODE_MODE, UI_MODE } from '@/utils/pipelineConst'
 import request from '@/utils/request'
 import { hashID, randomString } from '@/utils/util'
 import { areDeeplyEqual } from '../../../utils/util'
@@ -47,12 +47,12 @@ import {
     SELECT_PIPELINE_VERSION,
     SET_ATOMS,
     SET_ATOMS_CLASSIFY,
+    SET_ATOMS_OUTPUT_MAP,
     SET_ATOM_EDITING,
     SET_ATOM_MODAL,
     SET_ATOM_MODAL_FETCHING,
     SET_ATOM_PAGE_OVER,
     SET_ATOM_VERSION_LIST,
-    SET_ATOMS_OUTPUT_MAP,
     SET_COMMEND_ATOM_COUNT,
     SET_COMMEND_ATOM_PAGE_OVER,
     SET_COMMON_PARAMS,
@@ -77,7 +77,6 @@ import {
     SET_SHOW_VARIABLE,
     SET_STAGE_TAG_LIST,
     SET_STORE_SEARCH,
-    SET_TEMPLATE,
     SWITCHING_PIPELINE_VERSION,
     TOGGLE_ATOM_SELECTOR_POPUP,
     TOGGLE_STAGE_REVIEW_PANEL,
@@ -103,6 +102,42 @@ function getMapByKey (list, key) {
         return objMap
     }, {})
     return [keyList, objMap]
+}
+
+export function dealPipelineRes ({ getters, dispatch, commit, state }, {
+    pipelineRes,
+    atomPropRes
+}) {
+    const { setting, model } = pipelineRes?.modelAndSetting
+    const atomProp = atomPropRes.data
+    const elements = getters.getAllElements(model.stages)
+    elements.forEach(element => { // 将os属性设置到model内
+        Object.assign(element, {
+            ...(atomProp?.[element.atomCode] ?? {})
+        })
+    })
+    dispatch('setPipeline', model)
+    if (!areDeeplyEqual(state.pipelineWithoutTrigger?.stages, model.stages.slice(1))) {
+        commit(SET_PIPELINE_WITHOUT_TRIGGER, {
+            ...model,
+            stages: model.stages.slice(1)
+        })
+    }
+
+    commit(PIPELINE_SETTING_MUTATION, Object.assign(setting, {
+        versionUpdater: pipelineRes?.updater,
+        versionUpdateTime: pipelineRes?.updateTime
+    }))
+    if (!pipelineRes?.yamlSupported) {
+        rootCommit(commit, UPDATE_PIPELINE_MODE, UI_MODE)
+    }
+    if (pipelineRes?.yamlSupported) {
+        const { yaml, ...highlightMap } = pipelineRes?.yamlPreview ?? {}
+        if (pipelineRes?.yamlPreview?.yaml) {
+            commit(SET_PIPELINE_YAML, yaml)
+        }
+        commit(SET_PIPELINE_YAML_HIGHLIGHT_MAP, highlightMap)
+    }
 }
 
 export default {
@@ -138,6 +173,16 @@ export default {
             return response.data
         })
     },
+    requestTemplateSummary ({ commit }, { projectId, templateId }) {
+        const url = `/${PROCESS_API_URL_PREFIX}/user/pipeline/template/v2/${projectId}/${templateId}/info`
+        return request.get(url).then(response => {
+            commit(SET_PIPELINE_INFO, {
+                ...response.data,
+                isTemplate: true
+            })
+            return response.data
+        })
+    },
     toggleStageReviewPanel: actionCreator(TOGGLE_STAGE_REVIEW_PANEL),
 
     setStoreSearch ({ commit }, str) {
@@ -151,40 +196,6 @@ export default {
     setRequestAtomData ({ commit }, data) {
         commit(SET_REQUEST_ATOM_DATA, data)
     },
-    requestTemplate: async ({ commit, dispatch, getters }, { projectId, templateId, version }) => {
-        try {
-            const versionQuery = version
-                ? {
-                    version
-                }
-                : null
-            const [templateRes, atomPropRes] = await Promise.all([
-                request.get(`/${PROCESS_API_URL_PREFIX}/user/templates/projects/${projectId}/templates/${templateId}`, {
-                    params: versionQuery
-                }),
-                request.get(`/${PROCESS_API_URL_PREFIX}/user/template/atoms/projects/${projectId}/templates/${templateId}/atom/prop/list`, {
-                    params: versionQuery
-                })
-            ])
-            const template = templateRes.data.template
-            const atomProp = atomPropRes.data
-            const elements = getters.getAllElements(template.stages)
-            elements.forEach(element => { // 将os属性设置到model内
-                Object.assign(element, {
-                    ...atomProp[element.atomCode]
-                })
-            })
-            dispatch('setPipeline', template)
-            commit(SET_TEMPLATE, {
-                template: templateRes.data
-            })
-        } catch (e) {
-            if (e.code === 403) {
-                e.message = ''
-            }
-            rootCommit(commit, FETCH_ERROR, e)
-        }
-    },
     getCheckAtomInfo: ({ commit }, { projectId, pipelineId, buildId, elementId }) => {
         return request.get(`/${PROCESS_API_URL_PREFIX}/user/builds/${projectId}/${pipelineId}/${buildId}/${elementId}/toReview`).then(response => {
             return response.data
@@ -195,44 +206,43 @@ export default {
             return response.data
         })
     },
-    requestPipeline: async ({ commit, dispatch, getters, state }, { projectId, pipelineId, version }) => {
-        try {
-            const [pipelineRes, atomPropRes] = await Promise.all([
-                request.get(`${PROCESS_API_URL_PREFIX}/user/version/projects/${projectId}/pipelines/${pipelineId}/versions/${version ?? ''}`),
-                request.get(`/${PROCESS_API_URL_PREFIX}/user/pipeline/projects/${projectId}/pipelines/${pipelineId}/atom/prop/list`, {
-                    params: version ? { version } : {}
-                })
-            ])
-            const { setting, model } = pipelineRes.data.modelAndSetting
-            const atomProp = atomPropRes.data
-            const elements = getters.getAllElements(model.stages)
-            elements.forEach(element => { // 将os属性设置到model内
-                Object.assign(element, {
-                    ...atomProp[element.atomCode]
-                })
+    requestTemplate: async ({ commit, dispatch, getters, state }, { projectId, templateId, version }) => {
+        const [templateRes, atomPropRes] = await Promise.all([
+            dispatch('fetchTemplateByVersion', { projectId, templateId, version }),
+            request.get(`/${PROCESS_API_URL_PREFIX}/user/template/v2/atoms/projects/${projectId}/templates/${templateId}/atom/prop/list`, {
+                params: version ? { version } : {}
             })
-            dispatch('setPipeline', model)
-            if (!areDeeplyEqual(state.pipelineWithoutTrigger?.stages, model.stages.slice(1))) {
-                commit(SET_PIPELINE_WITHOUT_TRIGGER, {
-                    ...model,
-                    stages: model.stages.slice(1)
-                })
-            }
+        ])
 
-            commit(PIPELINE_SETTING_MUTATION, Object.assign(setting, {
-                versionUpdater: pipelineRes.data.updater,
-                versionUpdateTime: pipelineRes.data.updateTime
-            }))
-            if (!pipelineRes.data.yamlSupported) {
-                rootCommit(commit, UPDATE_PIPELINE_MODE, UI_MODE)
+        return [
+            {
+                modelAndSetting: {
+                    model: templateRes.resource.model,
+                    setting: templateRes.setting
+                },
+                updater: templateRes.resource.updater,
+                updateTime: templateRes.resource.updateTime,
+                yamlSupported: !!templateRes.resource.yaml,
+                yamlPreview: templateRes.yamlPreview
+            },
+            atomPropRes
+        ]
+    },
+    requestPipeline: async ({ commit, dispatch, getters, state }, { version, ...params }) => {
+        try {
+            const isTemplate = state.pipelineInfo?.isTemplate ?? false
+            let pipelineRes, atomPropRes
+            if (isTemplate) {
+                [pipelineRes, atomPropRes] = await dispatch('requestTemplate', { version, ...params })
+            } else {
+                [pipelineRes, atomPropRes] = await Promise.all([
+                    dispatch('fetchPipelineByVersion', { version, ...params }),
+                    request.get(`/${PROCESS_API_URL_PREFIX}/user/pipeline/projects/${params.projectId}/pipelines/${params.pipelineId}/atom/prop/list`, {
+                        params: version ? { version } : {}
+                    })
+                ])
             }
-            if (pipelineRes?.data?.yamlSupported) {
-                const { yaml, ...highlightMap } = pipelineRes.data.yamlPreview
-                if (pipelineRes?.data?.yamlPreview?.yaml) {
-                    commit(SET_PIPELINE_YAML, yaml)
-                }
-                commit(SET_PIPELINE_YAML_HIGHLIGHT_MAP, highlightMap)
-            }
+            dealPipelineRes({ getters, dispatch, commit, state }, { pipelineRes, atomPropRes })
         } catch (e) {
             if (e.code === 403) {
                 e.message = ''
@@ -242,6 +252,11 @@ export default {
     },
     fetchPipelineByVersion ({ commit }, { projectId, pipelineId, version }) {
         return request.get(`${PROCESS_API_URL_PREFIX}/user/version/projects/${projectId}/pipelines/${pipelineId}/versions/${version ?? ''}`).then(res => {
+            return res.data
+        })
+    },
+    fetchTemplateByVersion ({ commit }, { projectId, templateId, version }) {
+        return request.get(`${PROCESS_API_URL_PREFIX}/user/pipeline/template/v2/${projectId}/${templateId}/${version}/details/`).then(res => {
             return res.data
         })
     },
@@ -314,6 +329,63 @@ export default {
                 case 'FULL_MODEL2YAML':
                     if (data?.newYaml) {
                         commit(SET_PIPELINE_YAML, data?.newYaml)
+                    }
+                    break
+            }
+            return data
+        } catch (error) {
+            rootCommit(commit, UPDATE_PIPELINE_MODE, UI_MODE)
+            throw error
+        }
+    },
+    async templateTransfer ({ getters, state }, { projectId, pipelineId, storageType, ...params }) {
+        const apis = [
+            request.post(`${PROCESS_API_URL_PREFIX}/user/pipeline/template/v2/${projectId}/transfer`, params, {
+                params: {
+                    storageType
+                }
+            })
+        ]
+        if (storageType === 'YAML' && !state.editfromImport) {
+            apis.push(
+                request.get(`/${PROCESS_API_URL_PREFIX}/user/pipeline/projects/${projectId}/pipelines/${pipelineId}/atom/prop/list`, {
+                    params: params.version ? { version: params.version } : {}
+                })
+            )
+        }
+        const [{ data }, atomPropRes] = await Promise.all(apis)
+        if (data.yamlInvalidMsg) {
+            throw new Error(data.yamlInvalidMsg)
+        }
+        if (storageType === 'YAML' && atomPropRes?.data) {
+            const atomProp = atomPropRes.data
+            const elements = getters.getAllElements(data.templateModel.stages)
+            elements.forEach(element => {
+                Object.assign(element, {
+                    ...atomProp[element.atomCode]
+                })
+            })
+        }
+        return data
+    },
+    async transferTemplatePipeline ({ commit, dispatch }, { projectId, pipelineId, storageType, ...params }) {
+        try {
+            const data = await dispatch('templateTransfer', { projectId, pipelineId, storageType, ...params })
+
+            switch (storageType) {
+                case 'YAML':
+                    if (data?.templateModel) {
+                        commit(SET_PIPELINE, data?.templateModel)
+                        commit(SET_PIPELINE_WITHOUT_TRIGGER, {
+                            ...(data?.templateModel ?? {}),
+                            stages: data?.templateModel.stages.slice(1)
+                        })
+                        commit(PIPELINE_SETTING_MUTATION, data?.templateSetting)
+                    }
+                    break
+                case 'MODEL':
+                    if (data?.yamlWithVersion.yamlStr) {
+                        commit(SET_PIPELINE_YAML, data?.yamlWithVersion.yamlStr)
                     }
                     break
             }
@@ -919,10 +991,15 @@ export default {
             return response.data
         })
     },
-    saveDraftPipeline ({ commit }, { projectId, ...draftPipeline }) {
+    saveDraftPipeline (_, { projectId, ...draftPipeline }) {
         return request.post(`/${PROCESS_API_URL_PREFIX}/user/version/projects/${projectId}/saveDraft`, draftPipeline)
     },
-    releaseDraftPipeline ({ commit }, { projectId, pipelineId, version, params }) {
+    saveDraftTemplate (_, { projectId, templateId, ...draftTemplate }) {
+        return request.put(`/${PROCESS_API_URL_PREFIX}/user/pipeline/template/v2/${projectId}/saveDraft`, draftTemplate, {
+            params: templateId ? { templateId } : {}
+        })
+    },
+    releaseDraftPipeline (_, { projectId, pipelineId, version, params }) {
         return request.post(`/${PROCESS_API_URL_PREFIX}/user/version/projects/${projectId}/pipelines/${pipelineId}/releaseVersion/${version}`, params)
     },
     async prefetchPipelineVersion ({ commit }, { projectId, pipelineId, version, ...params }) {
@@ -930,6 +1007,16 @@ export default {
             params
         })
         return res.data
+    },
+
+    async prefetchTemplateVersion ({ commit }, { projectId, templateId, version, ...params }) {
+        const res = await request.get(`/${PROCESS_API_URL_PREFIX}/user/pipeline/template/v2/${projectId}/${templateId}/releaseVersion/${version}/prefetch`, {
+            params
+        })
+        return res.data
+    },
+    releaseDraftTemplate (_, { projectId, templateId, version, params }) {
+        return request.post(`/${PROCESS_API_URL_PREFIX}/user/pipeline/template/v2/${projectId}/${templateId}/releaseVersion/${version}`, params)
     },
     yamlNavToPipelineModel ({ commit }, { projectId, body, ...params }) {
         return request.post(`/${PROCESS_API_URL_PREFIX}/user/transfer/projects/${projectId}/position`, {
@@ -973,6 +1060,9 @@ export default {
         return request.get(`/${PROCESS_API_URL_PREFIX}/user/scm/${projectId}/${repositoryHashId}/branches`, {
             params: searchParams
         })
+    },
+    setTemplateStrategy (_, { projectId, templateId, ...strategy }) {
+        return request.put(`/${PROCESS_API_URL_PREFIX}/user/pipeline/template/v2/${projectId}/${templateId}/updateUpgradeStrategy`, strategy)
     }
 
 }

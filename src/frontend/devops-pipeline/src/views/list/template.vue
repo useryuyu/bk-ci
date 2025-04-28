@@ -101,13 +101,13 @@
 
 <script>
     import FormField from '@/components/AtomPropertyPanel/FormField'
-    import emptyTips from '@/components/pipelineList/imgEmptyTips'
-    import templateTable from '@/components/template/templateTable'
+import emptyTips from '@/components/pipelineList/imgEmptyTips'
+import templateTable from '@/components/Template/templateTable'
 
     import {
-        PROJECT_RESOURCE_ACTION,
-        TEMPLATE_RESOURCE_ACTION
-    } from '@/utils/permission'
+PROJECT_RESOURCE_ACTION,
+TEMPLATE_RESOURCE_ACTION
+} from '@/utils/permission'
 
     export default {
         components: {
@@ -199,7 +199,7 @@
                 const { pagingConfig: { current, limit } } = this.$refs.selfTemp
                 this.getApiData(current, limit, params).then((res) => {
                     success(res)
-                    const list = res.models || []
+                    const list = res.records || []
                     this.showSelfEmpty = list.length <= 0
                 })
             },
@@ -214,7 +214,7 @@
                         projectId: this.projectId,
                         pageIndex,
                         pageSize,
-                        params
+                        ...params
                     })
                     this.isManagerUser = res.hasPermission
                     this.hasCreatePermission = res.hasCreatePermission
@@ -244,7 +244,6 @@
                             }
                         })
                     }
-                    console.log()
                     return res
                 } catch (err) {
                     this.$showTips({
