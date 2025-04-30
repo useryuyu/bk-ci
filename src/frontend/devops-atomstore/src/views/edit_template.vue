@@ -29,35 +29,38 @@
                         @updateTemplateForm="updateTemplateForm"
                     />
                 </div>
-                <div class="form-footer">
-                    <button
-                        class="bk-button bk-primary"
-                        type="button"
-                        @click="submit()"
-                    >
-                        {{ $t('store.提交') }}
-                    </button>
-                    <button
-                        class="bk-button bk-default"
-                        type="button"
-                        @click="$router.back()"
-                    >
-                        {{ $t('store.取消') }}
-                    </button>
-                </div>
             </form>
+        </div>
+        <div class="form-footer">
+            <div>
+                <button
+                    class="bk-button bk-primary"
+                    type="button"
+                    @click="submit()"
+                >
+                    {{ $t('store.提交上架') }}
+                </button>
+                <button
+                    class="bk-button bk-default"
+                    type="button"
+                    @click="$router.back()"
+                >
+                    {{ $t('store.取消') }}
+                </button>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
     import breadCrumbs from '@/components/bread-crumbs.vue'
-import { PublishInfo, TemplateInfo } from '@/components/editContent'
+    import { PublishInfo, VisibleRange, TemplateInfo } from '@/components/editContent'
 
     export default {
         components: {
             breadCrumbs,
             TemplateInfo,
+            VisibleRange,
             PublishInfo
         },
         data () {
@@ -72,6 +75,8 @@ import { PublishInfo, TemplateInfo } from '@/components/editContent'
                     projectCode: '',
                     templateVersion: '',
                     publishStrategy: 'MANUAL',
+                    fullScopeVisible: true,
+                    deptInfos: [],
                     templateName: '',
                     templateType: 'PIPELINE',
                     releaseFlag: false,
@@ -116,6 +121,12 @@ import { PublishInfo, TemplateInfo } from '@/components/editContent'
                         isShowInfo: this.hasSourceInfo || this.type === 'edit'
                     }
                 }, {
+                    name: 'VisibleRange',
+                    component: VisibleRange,
+                    props: {
+                        templateForm: this.templateForm
+                    }
+                }, {
                     name: 'PublishInfo',
                     component: PublishInfo,
                     props: {
@@ -130,12 +141,11 @@ import { PublishInfo, TemplateInfo } from '@/components/editContent'
         methods: {
             async init () {
                 if (this.hasSourceInfo) {
-                    const { projectCode, templateCode, templateName, templateVersion } = this.$route.query
+                    const { projectCode, templateCode, templateName } = this.$route.query
                     Object.assign(this.templateForm, {
                         projectCode,
                         templateCode,
-                        templateName,
-                        templateVersion
+                        templateName
                     }, {})
                     this.showContent = true
                 } else if (this.type === 'apply') {
@@ -151,7 +161,10 @@ import { PublishInfo, TemplateInfo } from '@/components/editContent'
                     const res = await this.$store.dispatch('store/requestTempIdDetail', {
                         templateId: this.templateId
                     })
-                    Object.assign(this.templateForm, res, {})
+                    Object.assign(this.templateForm, res, {
+                        fullScopeVisible: res.storeVisibleDept.fullScopeVisible,
+                        deptInfos: res.storeVisibleDept.deptInfos
+                    })
                 } catch (err) {
                     const message = err.message ? err.message : err
                     const theme = 'error'
@@ -189,12 +202,32 @@ import { PublishInfo, TemplateInfo } from '@/components/editContent'
             async isValid () {
                 const TemplateInfoValid = await this.$refs.TemplateInfo[0].validate()
                 const PublishInfo = await this.$refs.PublishInfo[0].validate()
-                return TemplateInfoValid && PublishInfo
+                const isTemplateInfoCheckValid = this.$refs.TemplateInfo[0].checkValid()
+                const isVisibleRangeCheckValid = this.$refs.VisibleRange[0].checkValid()
+                return TemplateInfoValid && PublishInfo && isTemplateInfoCheckValid && isVisibleRangeCheckValid
             },
             async submit () {
-                const isCheckValid = this.$refs.TemplateInfo[0].checkValid()
                 const valid = await this.isValid()
-                if (isCheckValid && valid) {
+                console.log({
+                    projectCode: this.templateForm.projectCode,
+                    templateVersion: this.templateForm.templateVersion,
+                    publishStrategy: this.templateForm.publishStrategy,
+                    fullScopeVisible: this.templateForm.fullScopeVisible,
+                    deptInfos: this.templateForm.deptInfos,
+                    templateCode: this.templateForm.templateCode,
+                    templateName: this.templateForm.templateName,
+                    templateType: this.templateForm.templateType,
+                    categoryIdList: this.templateForm.categoryIdList,
+                    classifyCode: this.templateForm.classifyCode,
+                    labelIdList: this.templateForm.labelIdList.filter(i => i !== 'null' && i !== ' ' && i),
+                    publisher: this.templateForm.publisher,
+                    logoUrl: this.templateForm.logoUrl || undefined,
+                    iconData: this.templateForm.iconData || undefined,
+                    summary: this.templateForm.summary || undefined,
+                    description: this.templateForm.description || undefined,
+                    pubDescription: this.templateForm.pubDescription || undefined
+                })
+                if (valid) {
                     let message, theme
                     
                     try {
@@ -204,7 +237,8 @@ import { PublishInfo, TemplateInfo } from '@/components/editContent'
                             projectCode: this.templateForm.projectCode,
                             templateVersion: this.templateForm.templateVersion,
                             publishStrategy: this.templateForm.publishStrategy,
-                            fullScopeVisible: true,
+                            fullScopeVisible: this.templateForm.fullScopeVisible,
+                            deptInfos: this.templateForm.deptInfos,
                             templateCode: this.templateForm.templateCode,
                             templateName: this.templateForm.templateName,
                             templateType: this.templateForm.templateType,
@@ -269,13 +303,15 @@ import { PublishInfo, TemplateInfo } from '@/components/editContent'
     @import '@/assets/scss/conf.scss';
 
     .edit-template-wrapper {
+        position: relative;
         height: 100%;
         .edit-template-content {
             margin: 20px 0;
-            height: calc(100% - 5.6vh - 40px);
+            height: calc(100% - 5.6vh - 88px);
             overflow: auto;
             display: flex;
             justify-content: center;
+            padding-bottom: 20px;
         }
         .edit-template-form {
             position: relative;
@@ -459,10 +495,6 @@ import { PublishInfo, TemplateInfo } from '@/components/editContent'
                 padding: 10px;
                 height: 80px;
             }
-            .form-footer {
-                margin-top: 26px;
-                margin-left: 100px;
-            }
             .template-logo-box {
                 position: absolute;
                 top: 0;
@@ -529,6 +561,22 @@ import { PublishInfo, TemplateInfo } from '@/components/editContent'
         }
         .auto-textarea-wrapper {
             min-height: 200px;
+        }
+        .form-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 9;
+            background-color: #fafbfd;
+            width: 100%;
+            height: 48px;
+            line-height: 48px;
+            border-top: 1px solid #e5e7ec;
+
+            div {
+                margin: 0 auto;
+            width: 1200px;
+            }
         }
     }
     .error-commit {
