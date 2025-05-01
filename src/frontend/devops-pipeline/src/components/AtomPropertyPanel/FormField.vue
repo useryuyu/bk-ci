@@ -1,6 +1,6 @@
 <script>
     import Logo from '@/components/Logo'
-import NamingConventionTip from '@/components/namingConventionTip.vue'
+    import NamingConventionTip from '@/components/namingConventionTip.vue'
     export default {
         name: 'form-field',
         components: {
