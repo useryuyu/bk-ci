@@ -87,8 +87,8 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex'
     import organizationDialog from '@/components/organization-dialog'
+    import { mapActions, mapGetters } from 'vuex'
 
     export default {
         components: {
@@ -124,6 +124,9 @@
 
             isEnterprise () {
                 return VERSION_TYPE === 'ee'
+            },
+            typeCodeKey () {
+                return this.$route.params.type ? `${this.$route.params.type}Code` : ''
             }
         },
 
@@ -132,26 +135,41 @@
         },
 
         methods: {
-            requestList () {
-                const initMethodMap = {
-                    atom: () => this.$store.dispatch('store/requestVisibleList', { atomCode: this.detail.atomCode }),
-                    template: () => this.$store.dispatch('store/requesttplVisibleList', { templateCode: this.detail.templateCode }),
-                    image: () => this.$store.dispatch('store/requestImageVisableList', this.detail.imageCode),
-                    service: () => this.$store.dispatch('store/requestServiceVisableList', this.detail.serviceCode)
-                }
-                const type = this.$route.params.type
-                this.isLoading = true
-                initMethodMap[type]().then((res = {}) => {
+            ...mapActions('store', [
+                'requestVisibleList',
+                'requesttplVisibleList',
+                'requestImageVisableList',
+                'requestServiceVisableList',
+                'setVisableDept',
+                'setTplVisableDept',
+                'setImageVisableDept',
+                'setServiceVisableDept'
+            ]),
+            async requestList () {
+                try {
+                    const type = this.$route.params.type
+                    const initMethodMap = {
+                        atom: this.requestVisibleList,
+                        template: this.requesttplVisibleList,
+                        image: this.requestImageVisableList,
+                        service: this.requestServiceVisableList
+                    }
+                    const params = {
+                        [this.typeCodeKey]: this.detail[this.typeCodeKey]
+                    }
+                    this.isLoading = true
+                    const res = await initMethodMap[type](params)
                     const deptInfos = res.deptInfos || []
+
                     this.visibleList = deptInfos.map((x) => {
                         x.selected = false
                         return x
                     })
-                }).catch((err) => {
+                } catch (err) {
                     this.$bkMessage({ message: err.message || err, theme: 'error' })
-                }).finally(() => {
+                } finally {
                     this.isLoading = false
-                })
+                }
             },
 
             select (selection, row) {
@@ -165,36 +183,27 @@
                 })
             },
 
-            saveHandle (params) {
-                const type = this.$route.params.type
-                let method
-                switch (type) {
-                    case 'atom':
-                        params.atomCode = this.detail.atomCode
-                        method = () => this.$store.dispatch('store/setVisableDept', { params })
-                        break
-                    case 'template':
-                        params.templateCode = this.detail.templateCode
-                        method = () => this.$store.dispatch('store/setTplVisableDept', { params })
-                        break
-                    case 'image':
-                        params.imageCode = this.detail.imageCode
-                        method = () => this.$store.dispatch('store/setImageVisableDept', { params })
-                        break
-                    case 'service':
-                        params.serviceCode = this.detail.serviceCode
-                        method = () => this.$store.dispatch('store/setServiceVisableDept', { params })
-                        break
-                }
-                this.isSaveOrg = true
-                method().then(() => {
+            async saveHandle (params) {
+                try {
+                    const type = this.$route.params.type
+                    const methodMap = {
+                        atom: this.setVisableDept,
+                        template: this.setTplVisableDept,
+                        image: this.setImageVisableDept,
+                        service: this.setServiceVisableDept
+                    }
+                    this.isSaveOrg = true
+                    await methodMap[type]({
+                        ...params,
+                        [this.typeCodeKey]: this.detail[this.typeCodeKey]
+                    })
                     this.requestList()
-                }).catch((err) => {
+                } catch (err) {
                     this.$bkMessage({ message: err.message || err, theme: 'error' })
-                }).finally(() => {
+                } finally {
                     this.isSaveOrg = false
                     this.showDialog = false
-                })
+                }
             },
 
             cancelHandle () {
