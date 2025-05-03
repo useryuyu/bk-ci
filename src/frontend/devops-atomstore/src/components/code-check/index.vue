@@ -474,7 +474,6 @@
     }
     ::v-deep .exception-wrap-item {
         margin-top: 16px;
-        font-size: 12px;
         .exception-image {
             object-fit: none;
             width: 250px;

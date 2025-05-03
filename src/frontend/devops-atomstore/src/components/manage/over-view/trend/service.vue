@@ -39,9 +39,9 @@
 </template>
 
 <script>
+    import api from '@/api'
     import BKChart from '@blueking/bkcharts'
     import dayjs from 'dayjs'
-    import api from '@/api'
 
     export default {
         props: {
@@ -230,6 +230,16 @@
         margin-top: 5px;
         height: calc(100% - 39px);
         padding-bottom: 20px;
+
+        ::v-deep .exception-wrap-item {
+            .exception-image {
+                object-fit: none;
+                width: 200px;
+            }
+            .bk-exception-text {
+                font-size: 12px;
+            }
+        }
     }
 
     .common-head {
