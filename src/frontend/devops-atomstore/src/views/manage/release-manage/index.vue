@@ -6,7 +6,8 @@
     >
         <bk-tab-panel
             v-for="panel in panels"
-            v-bind="panel"
+            :name="panel.name"
+            :label="panel.label"
             render-directive="if"
             :key="panel.name"
         >
@@ -32,15 +33,15 @@
             const type = computed(() => vm.proxy.$route.params.type)
             const activePanel = ref('version')
             const panels = [
-                { label: vm.proxy.t('store.版本管理'), name: 'version', component: version },
+                { label: vm.proxy.$t('store.版本管理'), name: 'version', component: version },
                 ...(
                     type.value === TYPE_ENUM.service
-                        ? [{ label: vm.proxy.t('store.环境管理'), name: 'environment', component: environment }]
+                        ? [{ label: vm.proxy.$t('store.环境管理'), name: 'environment', component: environment }]
                         : []
                 ),
                 ...(
                     [TYPE_ENUM.atom, TYPE_ENUM.template].includes(type.value)
-                        ? [{ label: vm.proxy.t('store.代码质量'), name: 'check', component: codeCheck }]
+                        ? [{ label: vm.proxy.$t('store.代码质量'), name: 'check', component: codeCheck }]
                         : []
                 )
             ]

@@ -110,10 +110,10 @@
 <script>
     import { mapGetters } from 'vuex'
     import api from '../../api'
-    import fail from './fail'
-    import uncheck from './uncheck'
-    import success from './success'
     import doing from './doing'
+    import fail from './fail'
+    import success from './success'
+    import uncheck from './uncheck'
     import unqualified from './unqualified'
 
     const statusMap = {
@@ -161,35 +161,15 @@
                 return `${IWIKI_DOCS_URL}/x/kvMMBw`
             },
             storeType () {
-                const typeMap = {
-                    atom: 'ATOM',
-                    image: 'IMAGE',
-                    service: 'SERVICE'
-                }
-                const type = this.$route.params.type
-                return typeMap[type] || this.type
+                return this.type ?? this.$route.params.type.toUpperCase()
             },
 
             storeCode () {
-                const keyMap = {
-                    atom: 'atomCode',
-                    image: 'imageCode',
-                    service: 'serviceCode'
-                }
-                const type = this.$route.params.type
-                const key = keyMap[type]
-                return this.detail[key] || this.code
+                return this.code ?? this.detail[`${this.$route.params.type}Code`]
             },
 
             storeId () {
-                const keyMap = {
-                    atom: 'atomId',
-                    image: 'imageId',
-                    service: 'serviceId'
-                }
-                const type = this.$route.params.type
-                const key = keyMap[type]
-                return this.detail[key] || this.id
+                return this.id ?? this.detail[`${this.$route.params.type}Id`]
             }
         },
 
@@ -317,7 +297,8 @@
 
 <style lang="scss" scoped>
     ::v-deep .bk-exception-text {
-        margin-top: -50px;
+        margin-top: -30px;
+        font-size: 12px;
     }
     .code-check-main {
         height: 100%;
@@ -493,8 +474,10 @@
     }
     ::v-deep .exception-wrap-item {
         margin-top: 16px;
+        font-size: 12px;
         .exception-image {
             object-fit: none;
+            width: 250px;
         }
     }
     ::v-deep .code-check-tip {
