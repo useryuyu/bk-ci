@@ -197,9 +197,12 @@
                         service: this.setServiceVisableDept
                     }
                     this.isSaveOrg = true
+                    
                     await methodMap[type]({
-                        ...params,
-                        [this.typeCodeKey]: this.detail?.[this.typeCodeKey]
+                        params: {
+                            ...params,
+                            [this.typeCodeKey]: this.detail?.[this.typeCodeKey]
+                        }
                     })
                     this.requestList()
                 } catch (err) {
