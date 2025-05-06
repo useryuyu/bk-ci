@@ -789,5 +789,10 @@
     "清空": "Clear",
     "将添加X个可见范围": "Will add {0} visible ranges",
     "已添加": "Added",
-    "提交上架": "Submit for Listing"
+    "提交上架": "Submit for Listing",
+    "publishStrategy": "Publish Strategy: ",
+    "AUTO": "AUTO",
+    "MANUAL": "MANUAL",
+    "MANUAL-upgradeStrategyDesc": "When there are updates in the dev store, manually install new versions as needed",
+    "AUTO-upgradeStrategyDesc": "Automatically install new versions when they are released in the dev store",
 }

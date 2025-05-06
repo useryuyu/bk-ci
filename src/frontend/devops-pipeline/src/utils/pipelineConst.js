@@ -320,3 +320,8 @@ export const TEMPLATE_TYPE = {
     // JOB: 'JOB',
     // STEP: 'STEP'
 }
+
+export const STRATEGY_ENUM = {
+    AUTO: 'AUTO',
+    MANUAL: 'MANUAL'
+}

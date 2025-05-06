@@ -649,9 +649,8 @@
             },
 
             routerAtoms (code) {
-                const name = VERSION_TYPE === 'ee' ? 'setting' : 'visible'
                 this.$router.push({
-                    name,
+                    name: 'setting',
                     params: {
                         code,
                         type: 'template'

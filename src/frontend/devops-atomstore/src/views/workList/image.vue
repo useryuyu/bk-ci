@@ -508,7 +508,7 @@
 
             goToImageDetail (code) {
                 this.$router.push({
-                    name: 'version',
+                    name: 'setting',
                     params: {
                         code,
                         type: 'image'

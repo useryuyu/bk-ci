@@ -152,15 +152,15 @@
 </template>
 
 <script>
-    import { mapActions } from 'vuex'
     import breadCrumbs from '@/components/bread-crumbs.vue'
-    import testEnvPrepare from '../components/common/progressSteps/test-env-prepare'
-    import test from '../components/common/progressSteps/test'
-    import commit from '../components/common/progressSteps/commit'
+    import { mapActions } from 'vuex'
     import approve from '../components/common/progressSteps/approve'
     import begin from '../components/common/progressSteps/begin'
+    import commit from '../components/common/progressSteps/commit'
     import end from '../components/common/progressSteps/end'
     import online from '../components/common/progressSteps/online'
+    import test from '../components/common/progressSteps/test'
+    import testEnvPrepare from '../components/common/progressSteps/test-env-prepare'
 
     export default {
         components: {
@@ -244,7 +244,7 @@
                 return [
                     { name: this.$t('store.工作台') },
                     { name: this.$t('store.微扩展'), to: { name: 'serviceWork' } },
-                    { name: this.serviceDetail.serviceCode, to: { name: 'overView', params: { code: this.serviceDetail.serviceCode, type: 'service' } } },
+                    { name: this.serviceDetail.serviceCode, to: { name: 'statisticData', params: { code: this.serviceDetail.serviceCode, type: 'service' } } },
                     { name: this.$t('store.上架/升级微扩展') }
                 ]
             }

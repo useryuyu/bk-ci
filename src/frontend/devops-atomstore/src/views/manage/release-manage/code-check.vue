@@ -16,6 +16,8 @@
 
 <style lang="scss" scoped>
     .code-check {
+        height: 100%;
+        flex: 1;
         background: #fff;
     }
 </style>

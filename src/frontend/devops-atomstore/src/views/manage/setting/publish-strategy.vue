@@ -1,0 +1,109 @@
+<template>
+    <div class="publish-strategy">
+        <section class="publish-strategy-row">
+            <label>
+                {{ $t('store.publishStrategy') }}
+            </label>
+            
+            <bk-select
+                v-if="editing"
+                class="publish-strategy-select"
+                :value="strategy"
+                @change="handleStrategyChange"
+            >
+                <bk-option
+                    v-for="strategy in strategyOptions"
+                    :key="strategy.id"
+                    v-bind="strategy"
+                />
+            </bk-select>
+            <p
+                v-else
+                class="publish-strategy-detail"
+            >
+                <span>{{ strategyLabel }}</span>
+                <span class="publish-strategy-desc">{{ strategyDesc }}</span>
+                <i
+                    class="devops-icon icon-edit2"
+                    @click="editStrategy"
+                />
+            </p>
+        </section>
+    </div>
+</template>
+
+<script>
+    import { PUBLISH_STRATEGY } from '@/utils/constants'
+    import { computed, defineComponent, getCurrentInstance, ref } from 'vue'
+
+    export default defineComponent({
+        props: {
+            strategy: {
+                type: String,
+                required: true
+            }
+        },
+        setup (props) {
+            const vm = getCurrentInstance()
+            const editing = ref(false)
+            const strategyLabel = computed(() => vm.proxy.$t(`store.${props.strategy}`))
+            const strategyDesc = computed(() => vm.proxy.$t(`store.${props.strategy}-upgradeStrategyDesc`))
+            const strategyOptions = Object.keys(PUBLISH_STRATEGY).map(key => ({
+                id: key,
+                name: `${vm.proxy.$t(`store.${key}`)} (${vm.proxy.$t(`store.${key}-upgradeStrategyDesc`)})`
+            }))
+
+            function editStrategy () {
+                editing.value = true
+            }
+
+            function handleStrategyChange (newVal) {
+                // TODO:
+                if (!newVal || newVal === props.strategy) {
+                    editing.value = false
+                    return
+                }
+                vm.emit('update:strategy', newVal)
+                editing.value = false
+            }
+            return {
+                editing,
+                strategyOptions,
+                strategyLabel,
+                strategyDesc,
+                editStrategy,
+                handleStrategyChange,
+                strategy: props.strategy
+            }
+        }
+    })
+</script>
+
+<style lang="scss">
+    .publish-strategy {
+        display: flex;
+        background-color: white;
+        padding: 24px;
+        .publish-strategy-row {
+            width: 100%;
+            display: flex;
+            grid-gap: 8px;
+            font-size: 12px;
+            align-items: center;
+            .publish-strategy-select {
+                width: 222px;
+            }
+            
+            .publish-strategy-detail {
+                display: flex;
+                flex: 1;
+                align-items: center;
+                grid-gap: 6px;
+                .publish-strategy-desc {
+                    color: #979BA5;
+                }
+            }
+        }
+        
+    }
+</style>

@@ -214,25 +214,6 @@
             },
             async submit () {
                 const valid = await this.isValid()
-                console.log({
-                    projectCode: this.templateForm.projectCode,
-                    templateVersion: this.templateForm.templateVersion,
-                    publishStrategy: this.templateForm.publishStrategy,
-                    fullScopeVisible: this.templateForm.fullScopeVisible,
-                    deptInfos: this.templateForm.deptInfos,
-                    templateCode: this.templateForm.templateCode,
-                    templateName: this.templateForm.templateName,
-                    templateType: this.templateForm.templateType,
-                    categoryIdList: this.templateForm.categoryIdList,
-                    classifyCode: this.templateForm.classifyCode,
-                    labelIdList: this.templateForm.labelIdList.filter(i => i !== 'null' && i !== ' ' && i),
-                    publisher: this.templateForm.publisher,
-                    logoUrl: this.templateForm.logoUrl || undefined,
-                    iconData: this.templateForm.iconData || undefined,
-                    summary: this.templateForm.summary || undefined,
-                    description: this.templateForm.description || undefined,
-                    pubDescription: this.templateForm.pubDescription || undefined
-                })
                 if (valid) {
                     let message, theme
                     

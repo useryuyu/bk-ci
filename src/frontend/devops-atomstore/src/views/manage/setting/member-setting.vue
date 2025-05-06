@@ -277,24 +277,11 @@
             },
 
             storeType () {
-                const typeMap = {
-                    atom: 'ATOM',
-                    image: 'IMAGE',
-                    service: 'SERVICE'
-                }
-                const type = this.$route.params.type
-                return typeMap[type]
+                return this.$route.params.type.toUpperCase()
             },
 
             storeCode () {
-                const keyMap = {
-                    atom: 'atomCode',
-                    image: 'imageCode',
-                    service: 'serviceCode'
-                }
-                const type = this.$route.params.type
-                const key = keyMap[type]
-                return this.detail[key]
+                return this.detail[`${this.$route.params.type}Code`] ?? ''
             }
         },
 

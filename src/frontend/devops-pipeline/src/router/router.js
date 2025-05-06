@@ -29,8 +29,10 @@ const pipelineListEntry = () => import(/* webpackChunkName: "pipelinesNewList" *
 const PipelineManageList = () => import(/* webpackChunkName: "pipelinesNewList" */'../views/PipelineList/list')
 const PipelineListAuth = () => import(/* webpackChunkName: "pipelinesNewList" */'../views/PipelineList/Auth')
 
-const pipelinesGroup = () => import(/* webpackChunkName: "pipelinesGroup" */'../views/list/group')
-const pipelinesAudit = () => import(/* webpackChunkName: "pipelinesAudit" */'../views/list/audit')
+const PipelinesGroup = () => import(/* webpackChunkName: "pipelinesGroup" */'../views/Group')
+const PipelinesAudit = () => import(/* webpackChunkName: "pipelinesAudit" */'../views/Audit')
+const AtomDebug = () => import(/* webpackChunkName: "atomDebug" */'../views/AtomDebug.vue')
+const AtomManage = () => import(/* webpackChunkName: "atomManage" */'../views/AtomManage.vue')
 
 // 流水线模板
 const TemplateList = () => import(/* webpackChunkName: "pipelinesTemplate" */'../views/Template/List/')
@@ -43,8 +45,6 @@ const InstanceEntry = () => import(/* webpackChunkName: "pipelinesTemplate" */'.
 // const templateSetting = () => import(/* webpackChunkName: "pipelinesTemplate" */'../views/template/setting.vue')
 // const templateInstanceCreate = () => import(/* webpackChunkName: "pipelinesTemplate" */'../views/template/instance_create.vue')
 // const templatePermission = () => import(/* webpackChunkName: "pipelinesTemplate" */'../views/template/permission.vue')
-
-const atomManage = () => import(/* webpackChunkName: "atomManage" */'../views/list/atomManage.vue')
 
 // 客户端流水线任务子页 - subpages
 const pipelinesEntry = () => import(/* webpackChunkName: "pipelinesEntry" */'../views/subpages')
@@ -68,16 +68,11 @@ const DraftDebugHeader = () => import(/* webpackChunkName: "draftDebug" */'../co
 const pipelinesPreview = () => import(/* webpackChunkName: "pipelinesPreview" */'../views/subpages/preview.vue')
 const PreviewHeader = () => import(/* webpackChunkName: "pipelinesPreview" */'../components/PipelineHeader/PreviewHeader.vue')
 
-// 插件前端task.json在线调试
 // docker console
 const pipelinesDocker = () => import(/* webpackChunkName: "pipelinesDocker" */'../views/subpages/docker_console.vue')
-// 插件前端task.json在线调试
-const atomDebug = () => import(/* webpackChunkName: "atomDebug" */'../views/atomDebug.vue')
 
 // 流水线导入
 const ImportPipelineEdit = () => import(/* webpackChunkName: "importPipeline" */'../views/ImportEdit.vue')
-
-// const moocPipelinePage = () => import(/* webpackChunkName: "moocPipelinePage" */'../views/list/mooc.vue')
 
 const routes = [
     {
@@ -107,18 +102,7 @@ const routes = [
                 component: pipelineListEntry,
                 children: [
                     {
-                        path: 'group',
-                        name: 'pipelinesGroup',
-                        component: pipelinesGroup
-                    },
-                    // {
-                    //     path: 'template',
-                    //     name: 'pipelinesTemplate',
-                    //     component: pipelinesTemplate
-                    // },
-                    {
                         path: 'template',
-                        name: 'template',
                         component: templateGroup,
                         children: [
                             {
@@ -127,16 +111,6 @@ const routes = [
                                 component: TemplateList
                             }
                         ]
-                    },
-                    {
-                        path: 'atomManage',
-                        name: 'atomManage',
-                        component: atomManage
-                    },
-                    {
-                        path: 'audit',
-                        name: 'pipelinesAudit',
-                        component: pipelinesAudit
                     },
                     {
                         path: 'listAuth/:id/:groupName',
@@ -154,6 +128,21 @@ const routes = [
                 ]
             },
             {
+                path: 'group',
+                name: 'pipelinesGroup',
+                component: PipelinesGroup
+            },
+            {
+                path: 'atomManage',
+                name: 'atomManage',
+                component: AtomManage
+            },
+            {
+                path: 'audit',
+                name: 'pipelinesAudit',
+                component: PipelinesAudit
+            },
+            {
                 path: 'template/:templateId/:version?',
                 component: templateEntry,
                 children: [
@@ -162,21 +151,6 @@ const routes = [
                         name: 'templateEdit',
                         component: templateEdit
                     },
-                    // {
-                    //     path: 'createInstance/:curVersionId/:pipelineName?',
-                    //     name: 'createInstance',
-                    //     component: templateInstanceCreate
-                    // },
-                    // {
-                    //     path: 'setting',
-                    //     name: 'templateSetting',
-                    //     component: templateSetting
-                    // },
-                    // {
-                    //     path: 'permission',
-                    //     name: 'templatePermission',
-                    //     component: templatePermission
-                    // },
                     {
                         path: ':type?',
                         name: 'TemplateOverview',
@@ -199,7 +173,7 @@ const routes = [
             {
                 path: 'atomDebug',
                 name: 'atomDebug',
-                component: atomDebug
+                component: AtomDebug
             },
             {
                 path: ':pipelineId',
