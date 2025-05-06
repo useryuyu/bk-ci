@@ -40,7 +40,7 @@
                         : []
                 ),
                 ...(
-                    [TYPE_ENUM.atom, TYPE_ENUM.template].includes(type.value)
+                    type.value === TYPE_ENUM.atom
                         ? [{ label: vm.proxy.$t('store.代码质量'), name: 'check', component: codeCheck }]
                         : []
                 )
