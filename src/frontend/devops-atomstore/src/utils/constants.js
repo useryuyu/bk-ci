@@ -4,3 +4,8 @@ export const TYPE_ENUM = {
     image: 'image',
     service: 'service'
 }
+
+export const PUBLISH_STRATEGY = {
+    AUTO: 'AUTO',
+    MANUAL: 'MANUAL'
+}
