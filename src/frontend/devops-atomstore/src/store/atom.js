@@ -305,7 +305,7 @@ export const actions = {
     /**
      * 设置流水线插件可见范围
      */
-    setVisableDept ({ commit }, { params }) {
+    setVisableDept ({ commit }, params) {
         return vue.$ajax.post(`${prefix}/user/market/desk/atom/visible/dept`, params)
     },
 

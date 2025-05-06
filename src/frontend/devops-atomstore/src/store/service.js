@@ -143,7 +143,7 @@ export const actions = {
     /**
      * 添加可见范围
      */
-    setServiceVisableDept ({ commit }, { params }) {
+    setServiceVisableDept ({ commit }, params) {
         return vue.$ajax.post(`${prefix}/user/market/service/visible/dept`, params)
     },
     /**

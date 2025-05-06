@@ -217,8 +217,8 @@ export const actions = {
     /**
      * 设置模板可见范围
      */
-    setTplVisableDept ({ commit }, { params }) {
-        return vue.$ajax.post(`${prefix}/user/market/desk/templates/${params.templateCode}/visible/dept`, params)
+    setTplVisableDept ({ commit }, { templateCode, ...params }) {
+        return vue.$ajax.post(`${prefix}/user/market/desk/templates/${templateCode}/visible/dept`, params)
     },
 
     /**

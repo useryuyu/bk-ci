@@ -199,10 +199,8 @@
                     this.isSaveOrg = true
                     
                     await methodMap[type]({
-                        params: {
-                            ...params,
-                            [this.typeCodeKey]: this.detail?.[this.typeCodeKey]
-                        }
+                        ...params,
+                        [this.typeCodeKey]: this.detail?.[this.typeCodeKey]
                     })
                     this.requestList()
                 } catch (err) {
