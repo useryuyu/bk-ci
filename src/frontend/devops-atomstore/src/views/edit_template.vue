@@ -165,6 +165,12 @@
                         fullScopeVisible: res.storeVisibleDept.fullScopeVisible,
                         deptInfos: res.storeVisibleDept.deptInfos
                     })
+                    this.templateForm.categoryIdList = this.templateForm.categoryList.map(item => {
+                        return item.id
+                    })
+                    this.templateForm.labelIdList = (this.templateForm.labelList || []).map(item => {
+                        return item.id
+                    })
                 } catch (err) {
                     const message = err.message ? err.message : err
                     const theme = 'error'
