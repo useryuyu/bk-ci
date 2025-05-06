@@ -259,8 +259,10 @@ export const actions = {
     updateCurrentaTemplate ({ commit }, { res }) {
         commit(UPDATE_CURRENT_TEMPLATE, res)
     },
-    updatePublishStrategy: (state, { templateCode, strategy }) => {
-        return vue.$ajax.put(`${prefix}/user/market/${templateCode}/store/publishStrategy`, JSON.stringify(strategy))
+    updatePublishStrategy: (state, { templateCode, publishStrategy }) => {
+        return vue.$ajax.put(`${prefix}/user/market/${templateCode}/store/publishStrategy`, {
+            publishStrategy
+        })
     },
     /**
      * 获取模板版本列表
