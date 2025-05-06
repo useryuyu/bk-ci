@@ -47,7 +47,7 @@ export const actions = {
     /**
      * 添加可见范围
      */
-    setImageVisableDept ({ commit }, { params }) {
+    setImageVisableDept ({ commit }, params) {
         return vue.$ajax.post(`${prefix}/user/market/desk/image/visible/dept`, params)
     },
     /**

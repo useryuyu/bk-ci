@@ -21,10 +21,6 @@ import {
     UPDATE_CURRENT_TEMPLATE
 } from '@/store/constants'
 
-import {
-
-} from './constants'
-
 const prefix = 'store/api'
 const processPrefix = 'process/api'
 const Vue = window.Vue
@@ -221,8 +217,8 @@ export const actions = {
     /**
      * 设置模板可见范围
      */
-    setTplVisableDept ({ commit }, { params }) {
-        return vue.$ajax.post(`${prefix}/user/market/desk/templates/${params.templateCode}/visible/dept`, params)
+    setTplVisableDept ({ commit }, { templateCode, ...params }) {
+        return vue.$ajax.post(`${prefix}/user/market/desk/templates/${templateCode}/visible/dept`, params)
     },
 
     /**
@@ -262,6 +258,17 @@ export const actions = {
 
     updateCurrentaTemplate ({ commit }, { res }) {
         commit(UPDATE_CURRENT_TEMPLATE, res)
+    },
+    updatePublishStrategy: (state, { templateCode, publishStrategy }) => {
+        return vue.$ajax.put(`${prefix}/user/market/${templateCode}/store/publishStrategy`, {
+            publishStrategy
+        })
+    },
+    /**
+     * 获取模板版本列表
+     */
+    requestTemplateReleasedList ({ commit }, { templateCode, page, pageSize }) {
+        return vue.$ajax.get(`${prefix}/user/market/${templateCode}/template/published/history?page=${page}&pageSize=${pageSize}`)
     }
 }
 
