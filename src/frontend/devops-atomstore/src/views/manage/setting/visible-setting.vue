@@ -143,7 +143,11 @@
                 'setVisableDept',
                 'setTplVisableDept',
                 'setImageVisableDept',
-                'setServiceVisableDept'
+                'setServiceVisableDept',
+                'requestDeleteVisiable',
+                'deleteTplVisiable',
+                'requestDeleteImageVis',
+                'requestDeleteServiceVis'
             ]),
             async requestList () {
                 try {
@@ -155,7 +159,7 @@
                         service: this.requestServiceVisableList
                     }
                     const params = {
-                        [this.typeCodeKey]: this.detail[this.typeCodeKey]
+                        [this.typeCodeKey]: this.detail?.[this.typeCodeKey]
                     }
                     this.isLoading = true
                     const res = await initMethodMap[type](params)
@@ -195,7 +199,7 @@
                     this.isSaveOrg = true
                     await methodMap[type]({
                         ...params,
-                        [this.typeCodeKey]: this.detail[this.typeCodeKey]
+                        [this.typeCodeKey]: this.detail?.[this.typeCodeKey]
                     })
                     this.requestList()
                 } catch (err) {
@@ -240,14 +244,17 @@
             requestDeleteVisiable () {
                 const deptIds = this.deleteObj.id
                 const deleteMethodMap = {
-                    atom: () => this.$store.dispatch('store/requestDeleteVisiable', { atomCode: this.detail.atomCode, deptIds }),
-                    template: () => this.$store.dispatch('store/deleteTplVisiable', { templateCode: this.detail.templateCode, deptIds }),
-                    image: () => this.$store.dispatch('store/requestDeleteImageVis', { imageCode: this.detail.imageCode, deptIds }),
-                    service: () => this.$store.dispatch('store/requestDeleteServiceVis', { serviceCode: this.detail.serviceCode, deptIds })
+                    atom: this.requestDeleteVisiable,
+                    template: this.deleteTplVisiable,
+                    image: this.requestDeleteImageVis,
+                    service: this.requestDeleteServiceVis
                 }
                 const type = this.$route.params.type
                 this.deleteObj.loading = true
-                deleteMethodMap[type]().then(() => {
+                deleteMethodMap[type]({
+                    [this.typeCodeKey]: this.detail?.[this.typeCodeKey],
+                    deptIds
+                }).then(() => {
                     (String(deptIds).split(',')).forEach(id => {
                         const index = this.visibleList.findIndex(x => String(x.deptId) === String(id))
                         this.visibleList.splice(index, 1)
@@ -255,6 +262,7 @@
                     this.$bkMessage({ message: this.$t('store.删除成功'), theme: 'success' })
                 }).catch((err) => {
                     this.$bkMessage({ message: err.message || err, theme: 'error' })
+                    console.log(err)
                 }).finally(() => {
                     this.deleteObj.loading = false
                     this.deleteObj.show = false
