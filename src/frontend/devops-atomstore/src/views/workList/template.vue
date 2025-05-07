@@ -224,11 +224,11 @@
 </template>
 
 <script>
+    import { TEMPLATE_TABLE_COLUMN_CACHE, templateStatusList } from '@/store/constants'
     import { debounce } from '@/utils/index'
-    import status from './status'
-    import { templateStatusList, TEMPLATE_TABLE_COLUMN_CACHE } from '@/store/constants'
     import SearchSelect from '@blueking/search-select'
     import '@blueking/search-select/dist/styles/index.css'
+    import status from './status'
 
     export default {
         components: {
