@@ -1,6 +1,6 @@
 <template>
     <bk-dialog
-        class="organization-dialog"
+        class="organization"
         v-model="showDialog"
         :width="width"
         :padding="0"
@@ -49,7 +49,10 @@
                 </div>
                 <div class="organization-card organization-selected">
                     <div class="info-header preview"> {{ $t('store.结果预览') }} </div>
-                    <div class="preview-total">
+                    <div
+                        class="preview-total"
+                        v-if="selectedList.length"
+                    >
                         <i18n
                             tag="span"
                             path="将添加X个可见范围"
@@ -227,7 +230,7 @@
 
 <style lang="scss">
     @import '../assets/scss/conf';
-    .organization-dialog {
+    .organization {
         ::v-deep .bk-dialog-body {
             padding: 0;
         }
