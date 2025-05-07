@@ -66,18 +66,20 @@
             </bk-table>
         </section>
 
-        <organization-dialog
+        <VisibleRangeDialog
+            ref="visibleRef"
             :show-dialog="showDialog"
             :is-loading="isSaveOrg"
+            :select-data="visibleList"
             @saveHandle="saveHandle"
             @cancelHandle="cancelHandle"
         >
-        </organization-dialog>
+        </VisibleRangeDialog>
 
         <bk-dialog
             v-model="deleteObj.show"
             :loading="deleteObj.loading"
-            @confirm="requestDeleteVisiable"
+            @confirm="deleteVisiableConfirm"
             @cancel="deleteObj.show = false"
             :title="$t('store.删除')"
         >
@@ -87,12 +89,12 @@
 </template>
 
 <script>
-    import organizationDialog from '@/components/organization-dialog'
+    import VisibleRangeDialog from '@/components/VisibleRangeDialog'
     import { mapActions, mapGetters } from 'vuex'
 
     export default {
         components: {
-            organizationDialog
+            VisibleRangeDialog
         },
 
         data () {
@@ -239,10 +241,10 @@
                 if (!this.userInfo.isProjectAdmin) return
                 this.deleteObj.show = true
                 this.deleteObj.name = row.deptName
-                this.deleteObj.id = row.deptId
+                this.deleteObj.id = String(row.deptId)
             },
 
-            requestDeleteVisiable () {
+            deleteVisiableConfirm () {
                 const deptIds = this.deleteObj.id
                 const deleteMethodMap = {
                     atom: this.requestDeleteVisiable,
@@ -261,6 +263,8 @@
                         this.visibleList.splice(index, 1)
                     })
                     this.$bkMessage({ message: this.$t('store.删除成功'), theme: 'success' })
+
+                    this.$refs.visibleRef.clearChecked(deptIds.split(','))
                 }).catch((err) => {
                     this.$bkMessage({ message: err.message || err, theme: 'error' })
                     console.log(err)

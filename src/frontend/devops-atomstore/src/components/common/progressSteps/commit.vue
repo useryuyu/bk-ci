@@ -70,23 +70,25 @@
             </bk-button>
         </footer>
 
-        <organization-dialog
+        <VisibleRangeDialog
+            ref="visibleRef"
             :show-dialog="showDialog"
             :is-loading="false"
+            :select-data="deptInfoList"
             @saveHandle="saveHandle"
             @cancelHandle="cancelHandle"
         >
-        </organization-dialog>
+        </VisibleRangeDialog>
     </section>
 </template>
 
 <script>
     import upload from '@/components/upload'
-    import organizationDialog from '@/components/organization-dialog'
+    import VisibleRangeDialog from '@/components/VisibleRangeDialog'
 
     export default {
         components: {
-            organizationDialog,
+            VisibleRangeDialog,
             upload
         },
 
@@ -133,6 +135,7 @@
             deleteDept (dept) {
                 const index = this.deptInfoList.findIndex((x) => (x.deptId === dept.deptId))
                 this.deptInfoList.splice(index, 1)
+                this.$refs.visibleRef.clearChecked(dept.deptId)
             },
 
             saveHandle (params) {
