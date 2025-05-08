@@ -54,7 +54,8 @@
 
 <script>
     import breadCrumbs from '@/components/bread-crumbs.vue'
-    import { PublishInfo, VisibleRange, TemplateInfo } from '@/components/editContent'
+    import { PublishInfo, TemplateInfo, VisibleRange } from '@/components/editContent'
+    import { mapActions } from 'vuex'
 
     export default {
         components: {
@@ -139,6 +140,9 @@
             this.init()
         },
         methods: {
+            ...mapActions('store', [
+                'requestTemplateDetail'
+            ]),
             async init () {
                 if (this.hasSourceInfo) {
                     const { projectCode, templateCode, templateName } = this.$route.query
@@ -151,14 +155,14 @@
                 } else if (this.type === 'apply') {
                     this.showContent = true
                 } else {
-                    await this.requestTemplateDetail()
+                    await this.getTemplateDetail()
                 }
             },
-            async requestTemplateDetail () {
+            async getTemplateDetail () {
                 this.loading.isLoading = true
 
                 try {
-                    const res = await this.$store.dispatch('store/requestTemplateDetail', this.templateCode)
+                    const res = await this.requestTemplateDetail(this.templateCode)
                     Object.assign(this.templateForm, res, {
                         fullScopeVisible: res.storeVisibleDept.fullScopeVisible,
                         deptInfos: res.storeVisibleDept.deptInfos
