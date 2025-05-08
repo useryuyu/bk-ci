@@ -7,6 +7,7 @@
 
         <transition-tab
             :panels="panels"
+            :active-tab="currentTabName"
             @tab-change="tabChange"
             @child-tab-change="childTabChange"
         />
@@ -46,6 +47,9 @@
             ...mapGetters('store', {
                 detail: 'getDetail'
             }),
+            currentTabName () {
+                return this.$route.name
+            },
             type () {
                 return this.$route.params.type
             },
@@ -85,7 +89,7 @@
         methods: {
             ...mapActions('store', [
                 'requestAtom',
-                'requestTemplate',
+                'requestTemplateDetail',
                 'requestImageDetailByCode',
                 'requestServiceDetailByCode',
                 'setDetail',
@@ -122,7 +126,7 @@
                 const code = this.$route.params.code
                 const methodUrl = {
                     atom: this.requestAtom,
-                    template: this.requestTemplate,
+                    template: this.requestTemplateDetail,
                     image: this.requestImageDetailByCode,
                     service: this.requestServiceDetailByCode
                 }
