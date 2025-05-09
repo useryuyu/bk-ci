@@ -73,7 +73,7 @@
                     :min-width="100"
                     show-overflow-tooltip
                     :filters="templateTypeFilters"
-                    :filter-method="templateTypeFilterMethod "
+                    :filter-method="filterMethod "
                     :filter-multiple="false"
                 ></bk-table-column>
                 <bk-table-column
@@ -83,7 +83,7 @@
                     :min-width="100"
                     show-overflow-tooltip
                     :filters="projectFilters"
-                    :filter-method="projectFilterMethod "
+                    :filter-method="filterMethod "
                     :filter-multiple="false"
                 ></bk-table-column>
                 <bk-table-column
@@ -163,7 +163,7 @@
                         > {{ $t('store.下架') }} </span>
                         <span
                             style="margin-right:0"
-                            @click="deleteTemplate(props.row)"
+                            @click="delete (props.row)"
                             v-if="['INIT', 'GROUNDING_SUSPENSION', 'UNDERCARRIAGED'].includes(props.row.templateStatus)"
                         > {{ $t('store.移除') }} </span>
                     </template>
@@ -228,6 +228,7 @@
     import { debounce } from '@/utils/index'
     import SearchSelect from '@blueking/search-select'
     import '@blueking/search-select/dist/styles/index.css'
+    import { mapActions } from 'vuex'
     import status from './status'
 
     export default {
@@ -437,12 +438,17 @@
                 return icon
             },
 
+            ...mapActions('store', [
+                'offlineTemplate',
+                'deleteTemplate',
+                'requestTemplateList'
+            ]),
             async requestList () {
                 this.isLoading = true
                 const page = this.pagination.current
                 const pageSize = this.pagination.limit
                 try {
-                    const res = await this.$store.dispatch('store/requestTemplateList', {
+                    const res = await this.requestTemplateList({
                         templateName: '',
                         page,
                         pageSize,
@@ -467,23 +473,24 @@
                 return `${year} ${time}`
             },
 
-            deleteTemplate (row) {
-                this.isLoading = true
+            async delete (row) {
                 let message = this.$t('store.移除成功')
                 let theme = 'success'
+                try {
+                    this.isLoading = true
 
-                this.$store.dispatch('store/deleteTemplate', row.templateCode).then((res) => {
+                    await this.deleteTemplate(row.templateCode)
                     this.requestList()
-                }).catch((err) => {
+                } catch (err) {
                     message = err.message || err
                     theme = 'error'
-                }).finally(() => {
+                } finally {
                     this.$bkMessage({ message, theme })
                     this.isLoading = false
-                })
+                }
             },
 
-            async pageCountChanged (currentLimit, prevLimit) {
+            async pageCountChanged (currentLimit) {
                 if (currentLimit === this.pagination.limit) return
 
                 this.pagination.current = 1
@@ -511,7 +518,7 @@
 
                 this.offlineTempConfig.isLoading = true
                 try {
-                    await this.$store.dispatch('store/offlineTemplate', {
+                    await this.offlineTemplate({
                         templateCode: this.curHandlerTemp.templateCode
                     })
 
@@ -587,11 +594,7 @@
                     }
                 })
             },
-            projectFilterMethod (value, row, column) {
-                const property = column.property
-                return row[property] === value
-            },
-            templateTypeFilterMethod (value, row, column) {
+            filterMethod (value, row, column) {
                 const property = column.property
                 return row[property] === value
             },
