@@ -241,7 +241,7 @@ const routes = [
                     logo: 'store',
                     header: 'store',
                     to: 'atomHome',
-                    webSocket: ['^\/console\/store\/releaseProgress\/(shelf|upgrade)\/[^\/]+$']
+                    webSocket: ['^/console/store/releaseProgress/(shelf|upgrade)/[^/]+$']
                 }
             },
             {
