@@ -583,7 +583,11 @@
       "title": "{0} pipeline instances failed to release",
       "tips": "You can retry or close the popup."
     },
-    "modifyConfig": "Modify Configuration"
+    "modifyConfig": "Modify Configuration",
+    "batchEditInstance": "Batch Edit Instance",
+    "batchEditInstanceTips": "The added field configuration will apply to all instances. If left blank, the field value will be cleared by default.", 
+    "releaseTaskHeaderTips": "{0} release tasks are in progress.",
+    "views": "Views"
   },
   "newlist": {
     "exportYamlTip": "PreCI is a set of solutions provided by Blue Shield DevOps for developers' pre-CI R&D activities, which can detect problems as early as possible before submitting code and improve code quality. Including IDE plug-ins and command line tools.",
