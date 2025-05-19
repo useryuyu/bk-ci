@@ -69,7 +69,9 @@
             @confirm="handleConfirmCreate"
         />
         <InstallTemplateDialog
-            :value.sync="showInstallTemplateDialog"
+            :value="showInstallTemplateDialog"
+            @confirm="afterInstallTemplate"
+            @cancel="handleCancelInstallTemplate"
         />
     </article>
 </template>
@@ -375,6 +377,17 @@
         pagination.value.current = 1
         goTemplateOverview(createData)
     }
+
+    function afterInstallTemplate (res) {
+        handleCancelInstallTemplate()
+        console.log(res)
+        fetchTableData()
+    }
+
+    function handleCancelInstallTemplate () {
+        showInstallTemplateDialog.value = false
+    }
+
 </script>
 
 <style lang="scss" scoped>
