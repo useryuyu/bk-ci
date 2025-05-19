@@ -596,7 +596,8 @@
     "goRelease": "Publish",
     "storeFlag": "Already listed in the store, ",
     "upgradeFlag": "There is a version available for upgrade, ",
-    "publishFlag": "There is a new version that can be published to the store, "
+    "publishFlag": "There is a new version that can be published to the store, ",
+    "upgradeOnStore": "Upgrade on Store"
   },
   "newlist": {
     "exportYamlTip": "PreCI is a set of solutions provided by Blue Shield DevOps for developers' pre-CI R&D activities, which can detect problems as early as possible before submitting code and improve code quality. Including IDE plug-ins and command line tools.",
