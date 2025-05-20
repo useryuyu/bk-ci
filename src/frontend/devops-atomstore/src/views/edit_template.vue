@@ -145,12 +145,7 @@
             ]),
             async init () {
                 if (this.hasSourceInfo) {
-                    const { projectCode, templateCode, templateName } = this.$route.query
-                    Object.assign(this.templateForm, {
-                        projectCode,
-                        templateCode,
-                        templateName
-                    }, {})
+                    Object.assign(this.templateForm, this.$route.query, {})
                     this.showContent = true
                 } else if (this.type === 'apply') {
                     this.showContent = true
