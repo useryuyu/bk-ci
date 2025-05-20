@@ -26,10 +26,10 @@
 
 <script>
     import api from '@/api'
-    import breadCrumbs from '@/components/bread-crumbs.vue'
-    import transitionTab from '@/components/transition-tab.vue'
-    import { TYPE_ENUM } from '@/utils/constants'
-    import { mapActions, mapGetters } from 'vuex'
+import breadCrumbs from '@/components/bread-crumbs.vue'
+import transitionTab from '@/components/transition-tab.vue'
+import { TYPE_ENUM } from '@/utils/constants'
+import { mapActions, mapGetters } from 'vuex'
 
     export default {
         components: {
@@ -141,11 +141,12 @@
                     storeType: this.type.toUpperCase()
                 }
                 const res = await api.getMemberView(data)
-                
-                this.updateUserInfo({
-                    isProjectAdmin: res.type === 'ADMIN',
-                    userName: res.userName
-                })
+                if (res) {
+                    this.updateUserInfo({
+                        isProjectAdmin: res.type === 'ADMIN',
+                        userName: res.userName
+                    })
+                }
             }
         }
     }
