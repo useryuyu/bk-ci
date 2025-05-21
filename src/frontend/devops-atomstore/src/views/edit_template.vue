@@ -100,7 +100,7 @@
                 return this.$route.query.hasSourceInfo
             },
             templateCode () {
-                return this.$route.params.templateCode
+                return this.$route.params.templateCode || this.$route.query.templateCode
             },
             navList () {
                 return [
@@ -144,10 +144,7 @@
                 'releaseTemplate'
             ]),
             async init () {
-                if (this.hasSourceInfo) {
-                    Object.assign(this.templateForm, this.$route.query, {})
-                    this.showContent = true
-                } else if (this.type === 'apply') {
+                if (this.type === 'apply') {
                     this.showContent = true
                 } else {
                     await this.getTemplateDetail()
@@ -160,19 +157,9 @@
                     const res = await this.requestTemplateDetail(this.templateCode)
                     Object.assign(this.templateForm, res, {
                         fullScopeVisible: res.storeVisibleDept.fullScopeVisible,
-                        deptInfos: res.storeVisibleDept.deptInfos
-                    })
-                    this.templateForm.categoryIdList = this.templateForm.categoryList.map(item => {
-                        return item.id
-                    })
-                    this.templateForm.labelIdList = (this.templateForm.labelList || []).map(item => {
-                        return item.id
-                    })
-                    this.templateForm.categoryIdList = this.templateForm.categoryList.map(item => {
-                        return item.id
-                    })
-                    this.templateForm.labelIdList = (this.templateForm.labelList || []).map(item => {
-                        return item.id
+                        categoryIdList: this.templateForm.categoryList?.map(item => item.id),
+                        labelIdList: this.templateForm.labelList?.map(item => item.id),
+                        version: this.$route.query.version
                     })
                 } catch (err) {
                     const message = err.message ? err.message : err
