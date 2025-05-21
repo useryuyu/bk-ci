@@ -157,6 +157,7 @@
                     const res = await this.requestTemplateDetail(this.templateCode)
                     Object.assign(this.templateForm, res, {
                         fullScopeVisible: res.storeVisibleDept.fullScopeVisible,
+                        deptInfos: res.storeVisibleDept.deptInfos,
                         categoryIdList: this.templateForm.categoryList?.map(item => item.id),
                         labelIdList: this.templateForm.labelList?.map(item => item.id),
                         version: this.$route.query.version
