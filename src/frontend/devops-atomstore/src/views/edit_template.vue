@@ -165,8 +165,8 @@
                     Object.assign(this.templateForm, res, {
                         fullScopeVisible: res.storeVisibleDept.fullScopeVisible,
                         deptInfos: res.storeVisibleDept.deptInfos,
-                        categoryIdList: this.templateForm.categoryList?.map(item => item.id),
-                        labelIdList: this.templateForm.labelList?.map(item => item.id)
+                        categoryIdList: res.categoryList.map(item => item.id),
+                        labelIdList: res.labelList.map(item => item.id)
                     })
                 } catch (err) {
                     const message = err.message ? err.message : err
