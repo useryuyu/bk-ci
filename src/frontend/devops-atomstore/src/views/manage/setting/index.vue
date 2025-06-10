@@ -20,6 +20,7 @@
     import memberSetting from '@/views/manage/setting/member-setting.vue'
     import privateSetting from '@/views/manage/setting/private-setting.vue'
     import visibleSetting from '@/views/manage/setting/visible-setting.vue'
+    import deptInfoSetting from '@/views/manage/setting/deptInfo-setting.vue'
     import { computed, defineComponent, getCurrentInstance, ref } from 'vue'
     import publishStrategy from './publish-strategy.vue'
 
@@ -29,6 +30,7 @@
             privateSetting,
             apiSetting,
             visibleSetting,
+            deptInfoSetting,
             publishStrategy
         },
         setup () {
@@ -65,6 +67,10 @@
                             label: vm.proxy.$t('store.apiSettingManage'),
                             name: 'api',
                             component: apiSetting
+                        }, {
+                            label: vm.proxy.$t('store.归属信息'),
+                            name: 'deptInfo',
+                            component: deptInfoSetting
                         }]
                         : []
                 )
