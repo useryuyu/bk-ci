@@ -230,7 +230,7 @@
                                             </thead>
                                             <tbody>
                                                 <tr
-                                                    v-for="(item, index) in instanceList"
+                                                    v-for="(item, index) in renderInstanceList"
                                                     :key="item.pipelineName"
                                                 >
                                                     <td class="instance-name">{{ item.pipelineName }}</td>
@@ -404,8 +404,7 @@
                     slot="content"
                     class="release-pipeline-pac-form"
                 >
-                    <release-status
-                        :target-action="releaseParams.targetAction"
+                    <release-task-status
                         :instance-num="instanceList.length"
                         @cancel="cancelRelease"
                     />
@@ -419,7 +418,7 @@
     import Logo from '@/components/Logo'
     import PacTag from '@/components/PacTag.vue'
     import VersionDiffEntry from '@/components/PipelineDetailTabs/VersionDiffEntry'
-    import ReleaseStatus from '@/components/Template/ReleaseStatus'
+    import ReleaseTaskStatus from '@/components/Template/ReleaseTaskStatus'
     import {
         SET_RELEASE_ING,
         SHOW_TASK_DETAIL
@@ -430,7 +429,7 @@
         components: {
             VersionDiffEntry,
             PacTag,
-            ReleaseStatus
+            ReleaseTaskStatus
         },
         props: {
             value: {
@@ -628,6 +627,12 @@
             },
             disabledYamlCodeLib () {
                 return this.isTemplateInstanceMode ? this.templateInstanceEnablePac : this.pacEnabled
+            },
+            renderInstanceList () {
+                return this.instanceList.map(i => ({
+                    ...i,
+                    filePath: this.trimCIPrefix(i?.filePath)
+                }))
             }
         },
         watch: {
@@ -1199,8 +1204,8 @@
                 }
             },
             trimCIPrefix (filePath) {
-                return filePath.startsWith(this.filePathDir)
-                    ? filePath.replace(this.filePathDir, '')
+                return filePath?.startsWith(this.filePathDir)
+                    ? filePath?.replace(this.filePathDir, '')
                     : filePath
             }
         }

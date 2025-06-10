@@ -99,8 +99,8 @@
                 :handle-change="handleChange"
                 v-validate="'required'"
                 :data-vv-scope="'pipelineParam'"
-                :replace-key="param.replaceKey"
-                :search-url="param.searchUrl"
+                replace-key="{keyword}"
+                :search-url="getSearchUrl('CODE_SVN')"
             >
             </request-selector>
         </form-field>
@@ -202,6 +202,8 @@
                 :data-vv-scope="'pipelineParam'"
                 :value="param.defaultValue"
                 :handle-change="handleChange"
+                replace-key="{keyword}"
+                :search-url="getSearchUrl(param.scmType)"
             >
             </request-selector>
             <request-selector
@@ -380,8 +382,7 @@
         computed: {
             ...mapGetters('atom', [
                 'osList',
-                'allPipelineParams',
-                'getBuildResourceTypeList'
+                'allPipelineParams'
             ]),
             baseOSList () {
                 return this.osList.filter(os => os.value !== 'NONE').map(os => ({
@@ -453,9 +454,7 @@
             getBranchOption (name) {
                 return getBranchOption(name)
             },
-            getBuildTypeList (os) {
-                return this.getBuildResourceTypeList(os)
-            },
+            
             setSelectorDefaultVal ({ type, defaultValue = '' }) {
                 if (typeof this.param.defaultValue === 'string' && (isMultipleParam(this.param.type) || isEnumParam(this.param.type))) { // 选项清除时，修改对应的默认值
                     const dv = this.param.defaultValue.split(',').filter(v => this.param.options.map(k => k.key).includes(v))
