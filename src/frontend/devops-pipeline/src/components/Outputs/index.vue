@@ -270,7 +270,7 @@
     import ExtMenu from '@/components/pipelineList/extMenu'
     import { extForFile, repoTypeMap, repoTypeNameMap } from '@/utils/pipelineConst'
     import { convertFileSize, convertTime } from '@/utils/util'
-    import { mapActions } from 'vuex'
+    import { mapActions, mapState } from 'vuex'
 
     export default {
         components: {
@@ -304,6 +304,7 @@
             }
         },
         computed: {
+            ...mapState('atom', ['execDetail']),
             filterQuery () {
                 const uniqueKeys = new Set()
                 const result = []
@@ -319,6 +320,9 @@
                 })
 
                 return result
+            },
+            isDebugExec () {
+                return this.execDetail?.debug ?? false
             },
             initWidth () {
                 return this.currentTab === 'reports' ? '300px' : '40%'
@@ -653,7 +657,8 @@
             async getArtifactDate () {
                 const repoList = await this.getMetadataLabel({
                     projectId: this.$route.params.projectId,
-                    pipelineId: this.$route.params.pipelineId
+                    pipelineId: this.$route.params.pipelineId,
+                    ...(this.isDebugExec ? {debug: this.isDebugExec} : {})
                 })
 
                 this.artifactFilterData = repoList.map(item => {
