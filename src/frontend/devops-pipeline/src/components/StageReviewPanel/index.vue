@@ -30,9 +30,9 @@
 
 <script>
     import { mapState, mapActions } from 'vuex'
-    import reviewEdit from './edit'
-    import reviewShow from './show'
-    import reviewApprove from './approve'
+    import reviewEdit from './edit' // 编辑页，调试预览页
+    import reviewShow from './show' // 构建详情审批完成页
+    import reviewApprove from './approve'  // 构建详情未审核页
 
     export default {
         name: 'stage-review-panel',

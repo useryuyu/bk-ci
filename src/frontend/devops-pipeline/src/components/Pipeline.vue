@@ -329,7 +329,7 @@
 
             getStageByIndex (stageIndex) {
                 const { getStage, pipeline } = this
-                return getStage(pipeline.stages, stageIndex)
+                return getStage(pipeline?.stages, stageIndex)
             },
             handlePipelineChange (pipeline) {
                 if (!this.editable) return

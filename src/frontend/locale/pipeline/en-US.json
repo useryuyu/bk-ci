@@ -1762,5 +1762,9 @@
   "artifactQuality": "Artifact Quality",
   "totalArtifactCount": "Total of {0}",
   "noArchivedPipelines": "No archived pipelines for now, no action needed",
-  "notParamsTip": "This parameter is no longer an input parameter or has been deleted and cannot be passed during execution. You can manually delete it, or it will be automatically removed from the parameter list after saving."
+  "notParamsTip": "This parameter is no longer an input parameter or has been deleted and cannot be passed during execution. You can manually delete it, or it will be automatically removed from the parameter list after saving.",
+  "paramRedundantAndReadyOnly": "Custom parameter [{0}] has the same name as a pipeline variable. Since both belong to the variables context and the pipeline variable is read-only, adding this custom parameter is meaningless.",
+  "paramRedundant": "Custom parameter [{0}] has the same name as a pipeline variable. Since both belong to the variables context, it will overwrite the pipeline variable with the value at the time of approval after passing the review.",
+  "redundantExecutionParameters": "Custom parameter [{0}] has the same name as a read-only pipeline variable [{1}]. Since both belong to the variables context, this parameter is invalid.",
+  "ignoreUnchangedValues": "Custom parameter [{0}] has the same name as pipeline variable [{1}]. Since both belong to the variables context and the pipeline variable is read-only, the variable value change is ignored."
 }

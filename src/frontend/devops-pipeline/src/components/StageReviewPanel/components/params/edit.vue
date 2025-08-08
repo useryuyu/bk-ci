@@ -10,12 +10,28 @@
             <i class="bk-icon icon-plus-circle"></i>{{ $t('stageReview.createVariables') }}
         </bk-button>
 
-        <bk-table :data="copyReviewParams">
+        <bk-table
+            :data="copyReviewParams"
+            :row-class-name="tableRowClassName"
+        >
             <bk-table-column
                 :label="$t('stageReview.variableName')"
                 prop="key"
-                show-overflow-tooltip
-            ></bk-table-column>
+            >
+                <template slot-scope="props">
+                    <span v-bk-tooltips="props.row.key">{{ props.row.key }}</span>
+                    <div
+                        class="overlay"
+                        v-if="props.row.isParamRedundant"
+                    >
+                        <bk-popover
+                            :content="$t('paramRedundantAndReadyOnly', [props.row.key])"
+                        >
+                            <p style="width: 810px; visibility: hidden;">{{ props.row.key }}</p>
+                        </bk-popover>
+                    </div>
+                </template>
+            </bk-table-column>
             <bk-table-column
                 :label="$t('stageReview.alias')"
                 prop="chineseName"
@@ -25,6 +41,7 @@
                 :label="$t('stageReview.type')"
                 prop="valueType"
                 :formatter="typeFormatter"
+                show-overflow-tooltip
             ></bk-table-column>
             <bk-table-column
                 :label="$t('stageReview.defaultValue')"
@@ -46,6 +63,7 @@
             <bk-table-column
                 :label="$t('stageReview.operation')"
                 width="120"
+                class-name="operation-column"
             >
                 <template slot-scope="props">
                     <bk-button
@@ -81,6 +99,7 @@
 
 <script>
     import ParamForm from './form'
+    import { mapState } from 'vuex'
     import { CHECK_PARAM_LIST } from '@/store/modules/atom/paramsConfig'
 
     const paramsMap = CHECK_PARAM_LIST.reduce((acc, cur) => {
@@ -107,17 +126,89 @@
                 }
             }
         },
+        computed: {
+            ...mapState('atom', [
+                'pipeline'
+            ]),
+            variableParams () {
+                return this.pipeline?.stages[0]?.containers[0]?.params
+            },
+        },
+
+        watch: {
+            reviewParams: {
+                handler (newVal) {
+                    this.copyReviewParams = this.processReviewParams(newVal)
+                },
+                deep: true
+            },
+
+            variableParams: {
+                handler () {
+                    this.copyReviewParams = this.processReviewParams(this.copyReviewParams)
+                },
+                deep: true
+            }
+        },
+
+        created () {
+            this.copyReviewParams = this.processReviewParams(this.reviewParams)
+        },
 
         methods: {
-            confirm (row) {
+            processReviewParams (params) {
+                return params.map(param => ({
+                    ...param,
+                    isParamRedundant: this.checkParamRedundant(param)
+                }))
+            },
+
+            checkParamRedundant (param) {
+                return this.variableParams.some(
+                    vParam => vParam.id === param.key && vParam.readOnly === true
+                )
+            },
+
+            tableRowClassName ({ row }) {
+                return row.isParamRedundant ? 'redundant-row' : ''
+            },
+
+            handleConfirmAction (row) {
+                const newRow = {
+                    ...row,
+                    isParamRedundant: this.checkParamRedundant(row)
+                }
+
                 if (this.paramFormData.index >= 0) {
-                    this.copyReviewParams.splice(this.paramFormData.index, 1, row)
+                    this.copyReviewParams.splice(this.paramFormData.index, 1, newRow)
                 } else {
-                    this.copyReviewParams.push(row)
+                    this.copyReviewParams.push(newRow)
                 }
 
                 this.toggleShowParamForm()
                 this.triggleChange()
+            },
+
+            confirm (row) {
+                const isDuplicate = this.variableParams.some(
+                    param => param.id === row.key
+                )
+                const isDuplicateAndReadOnly = this.variableParams.some(
+                    param => param.id === row.key && param.readOnly
+                )
+                if (isDuplicate) {
+                    const title = isDuplicateAndReadOnly ? this.$t('paramRedundantAndReadyOnly', [row.key]) : this.$t('paramRedundant', [row.key])
+                    this.$bkInfo({
+                        theme: 'error',
+                        extCls: 'white-space',
+                        title,
+                        confirmFn: () => {
+                            this.handleConfirmAction(row)
+                        }
+                    })
+                } else {
+                    this.handleConfirmAction(row)
+                }
             },
 
             cancel () {
@@ -195,4 +286,39 @@
     ::v-deep .bk-table .cell {
         overflow: hidden;
     }
+
+    ::v-deep .bk-table .redundant-row {
+        color: #999;
+        .cell {
+            text-decoration: line-through;
+        }
+        
+        .operation-column .cell {
+            text-decoration: none;
+        }
+    }
+
+    ::v-deep .operation-column .cell {
+        position: inherit;
+        z-index: 2;
+    }
+
+    .overlay{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 810px;
+        height: 43px;
+        line-height: 43px;
+        background: transparent ;
+        z-index: 2;
+    }
+</style>
+
+<style lang="scss">
+.white-space {
+    .bk-dialog-header .bk-dialog-header-inner {
+        white-space: normal !important;
+    }
+}
 </style>

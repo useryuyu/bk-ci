@@ -403,6 +403,7 @@ export default {
     },
     [SET_PIPELINE_EXEC_DETAIL]: (state, execDetail = null) => {
         if (execDetail?.model?.stages) {
+            Vue.set(state, 'executeVariable', execDetail.model.stages?.[0].containers?.[0].params)
             execDetail.model.stages = execDetail.model.stages.slice(1)
         }
         Object.assign(state, {

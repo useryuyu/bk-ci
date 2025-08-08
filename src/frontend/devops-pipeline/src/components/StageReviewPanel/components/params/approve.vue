@@ -17,13 +17,19 @@
                         :class="{ 'review-param-gap': true, 'param-require': param.required }"
                     ></span>
                 </template>
-                <param-value
-                    :form="param"
-                    :disabled="disabled"
-                    :class="['review-param-item', {
-                        'checkbox-name': isCheakboxParam(param.valueType)
-                    }]"
-                ></param-value>
+                <bk-popover
+                    :disabled="!isParamDisabled(param)"
+                    :content="getConflictTip(param)"
+                    placement="top"
+                >
+                    <param-value
+                        :form="param"
+                        :disabled="isParamDisabled(param)"
+                        :class="['review-param-item', {
+                            'checkbox-name': isCheakboxParam(param.valueType)
+                        }]"
+                    ></param-value>
+                </bk-popover>
                 <i
                     class="bk-icon icon-info"
                     v-bk-tooltips="param.desc"
@@ -41,6 +47,7 @@
 
 <script>
     import paramValue from './param-value'
+    import { mapState } from 'vuex'
     import { isCheakboxParam } from '@/store/modules/atom/paramsConfig'
 
     export default {
@@ -62,6 +69,7 @@
         },
 
         computed: {
+            ...mapState('atom', ['executeVariable']),
             computedShowParam () {
                 return this.params.length && !this.$parent.$refs.flowApprove.isCancel
             }
@@ -78,6 +86,26 @@
 
         methods: {
             isCheakboxParam,
+            
+            isParamDisabled (param) {
+                if (this.disabled) return true
+                
+                return this.getConflictingVariable(param)
+            },
+
+            getConflictingVariable (param) {
+                return this.executeVariable.find(
+                    vParam => vParam.id === param.key && vParam.readOnly === true
+                )
+            },
+            
+            getConflictTip (param) {
+                const conflictVar = this.getConflictingVariable(param)
+                if (conflictVar) {
+                    return this.$t('redundantExecutionParameters', [this.getParamKey(param), conflictVar.id])
+                }
+            },
+            
             updateParams () {
                 const params = this.showReviewGroup.params && this.showReviewGroup.params.length ? this.showReviewGroup.params : this.reviewParams
                 this.params = params || []
