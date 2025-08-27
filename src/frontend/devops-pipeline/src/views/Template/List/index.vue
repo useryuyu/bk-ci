@@ -326,6 +326,7 @@
                         handler: () => copyTemplate(item),
                         hasPermission: item.canEdit,
                         disablePermissionApi: true,
+                        disable: item.latestVersionStatus !== 'RELEASED',
                         isShow: true,
                         permissionData: {
                             projectId: projectId.value,
@@ -474,6 +475,8 @@
                 theme: 'error',
                 message: error.message || error
             })
+            done()
+            hideUpgradeDialog()
         }
     }
 
