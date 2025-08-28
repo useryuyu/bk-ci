@@ -102,7 +102,7 @@
                     >
                         <bk-input
                             type="textarea"
-                            v-model="offlineData.form.reason"
+                            v-model.trim="offlineData.form.reason"
                             :placeholder="$t('store.请输入下架原因')"
                         ></bk-input>
                     </bk-form-item>
@@ -198,19 +198,18 @@
             async submitOfflineTemplateVersion () {
                 try {
                     const valid = await this.$refs.offlineForm.validate()
-                    if (!valid) {
-                        throw new Error(this.$t('store.校验失败，请修改再试'))
+                    if (valid) {
+                        const { templateCode, version, reason } = this.offlineData.form
+    
+                        this.offlineData.isLoading = true
+                        await this.offlineTemplate({
+                            templateCode,
+                            version,
+                            reason
+                        })
+                        this.cancelOfflineTemplate()
+                        this.$emit('pageChanged')
                     }
-                    const { templateCode, version, reason } = this.offlineData.form
-
-                    this.offlineData.isLoading = true
-                    await this.offlineTemplate({
-                        templateCode,
-                        version,
-                        reason
-                    })
-                    this.cancelOfflineTemplate()
-                    this.$emit('pageChanged')
                 } catch (err) {
                     this.$bkMessage({ message: err.message || err, theme: 'error' })
                 } finally {
