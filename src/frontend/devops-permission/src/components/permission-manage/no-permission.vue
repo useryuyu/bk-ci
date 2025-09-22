@@ -15,20 +15,18 @@
 </template>
 
 <script setup>
-import { useRoute, useRouter } from 'vue-router';
-import { defineProps, computed } from 'vue';
+import { defineProps } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { cacheProjectCode } from '@/store/useCacheProjectCode'
 
 const { t } = useI18n();
-const router = useRouter();
-const route = useRoute();
-const projectId = computed(() => route.params?.projectCode || route.query?.projectCode);
 const props = defineProps({
   userId: String,
 });
 
 function goPermission() {
-  window.open(`${location.origin}/console/manage/${projectId.value}/permission?userId=${props.userId}`)
+  const projectId = cacheProjectCode.get()
+  window.open(`${location.origin}/console/manage/${projectId}/permission?userId=${props.userId}`)
 }
 </script>
 

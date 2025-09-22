@@ -68,6 +68,12 @@ export default {
     return fetch.post(`${apiPerfix}/auth/authorization/${projectId}/listResourceAuthorization?operateChannel=PERSONAL`, params);
   },
   /**
+   * 批量续期组成员权限--无需进行审批
+   */
+  async batchRenewal(projectId: string, params?: any) {
+    return fetch.put(`${apiPerfix}/auth/resource/member/${projectId}/batch/renewal`, params);
+  },
+  /**
    * 批量交接用户组成员
    */
   batchHandover(projectId: string, params?: any) {

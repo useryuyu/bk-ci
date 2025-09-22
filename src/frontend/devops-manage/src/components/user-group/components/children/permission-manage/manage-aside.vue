@@ -665,6 +665,19 @@ onUnmounted(() => {
   border-radius: 2px;
   overflow-y: auto;
 
+  &::-webkit-scrollbar-thumb {
+    background-color: #c4c6cc !important;
+    border-radius: 5px !important;
+    &:hover {
+      background-color: #979ba5 !important;
+    }
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px !important;
+    height: 8px !important;
+  }
+
   .title {
     background-color: #EAEBF0;
     font-size: 14px;

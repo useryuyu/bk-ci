@@ -191,6 +191,7 @@
     "所在用户组": "User Group",
     "已选择X个用户组": "Selected {0} user groups",
     "无法移出": "cannot be removed",
+    "本次操作将忽略。": "This operation will be ignored.",
     "续期对象": "Renewal Object",
     "用户": "User",
     "组织架构": "Organization Structure",

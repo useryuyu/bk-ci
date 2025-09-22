@@ -3,7 +3,7 @@
     <div class="manage-content-project" v-if="projectTable">
       <p class="project-group">{{t("项目级用户组")}}</p>
       <div class="project-group-table">
-        <bk-collapse-panel v-model="projectTable.activeFlag">
+        <bk-collapse-panel v-model="projectTable.activeFlag" :alone="true">
           <template #header>
             <p class="group-title">
               <i :class="{
@@ -49,7 +49,7 @@
     <div class="manage-content-resource" v-if="sourceTable.length">
       <p class="project-group">{{t("资源级用户组")}}</p>
       <div class="project-group-table" v-for="item in sourceTable" :key="item.resourceType">
-        <bk-collapse-panel v-model="item.activeFlag" :item-click="collapseClick" :name="item.resourceType">
+        <bk-collapse-panel v-model="item.activeFlag" :item-click="collapseClick" :name="item.resourceType" :alone="true">
           <template #header>
             <p class="group-title">
               <i :class="{

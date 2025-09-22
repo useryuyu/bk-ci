@@ -288,7 +288,7 @@
     :before-close="beforeClose"
   >
     <template #default>
-      <div v-if="!isDetail" class="slider-content" :style="{height: invalidAuthorizationCount ? 'calc(100vh - 282px)' : 'calc(100vh - 226px)'}">
+      <div v-if="!isDetail" class="slider-content" :style="{height: invalidAuthorizationCount || batchFlag === 'renewal' ? 'calc(100vh - 282px)' : 'calc(100vh - 226px)'}">
         <div class="slider-main">
           <p class="main-desc">
             <i18n-t keypath="已选择X个用户组" tag="div">
@@ -947,6 +947,7 @@ function goBack() {
       height: 100%;
       flex: 1;
       margin-left: 16px;
+      overflow: hidden;
 
       .manage-content-btn {
         height: 42px;
@@ -975,8 +976,9 @@ function goBack() {
       }
 
       .group-tab {
-        height: 100%;
-        margin-top: 42px;
+        height: calc(100% - 21px);
+        overflow: auto;
+        margin-top: 21px;
       }
     }
   }

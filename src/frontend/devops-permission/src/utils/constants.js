@@ -6,6 +6,7 @@ export const TIME_FILTERS = {
   360: '12个月',
 };
 export const batchOperateTypes = {
+  renewal: 'RENEWAL',
   handover: 'HANDOVER',
   remove: 'REMOVE',
 }
@@ -21,6 +22,7 @@ export const btnTexts = {
   remove: "确定退出"
 }
 export const batchTitle = {
+  renewal: "批量续期",
   handover: "批量移交",
   remove: "批量退出"
 }

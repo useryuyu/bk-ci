@@ -8,6 +8,13 @@
       <div class="manage-content-btn">
         <bk-button
           :disabled="!isPermission"
+          @click="batchOperator('renewal')"
+          :loading="renewalLoading"
+        >
+          {{ t("批量续期") }}
+        </bk-button>
+        <bk-button
+          :disabled="!isPermission"
           @click="batchOperator('handover')"
           :loading="handoverLoading"
           >
@@ -42,7 +49,7 @@
       </div>
       <div v-else class="no-permission">
         <no-permission
-          :user-id="asideItem?.id"
+          :user-id="user.id"
         />
       </div>
     </div>
@@ -214,7 +221,7 @@
     :before-close="beforeClose"
   >
     <template #default>
-      <div v-if="!isDetail" class="slider-content" :style="{height: authorizationInvalid ? 'calc(100vh - 282px)' : 'calc(100vh - 226px)'}">
+      <div v-if="!isDetail" class="slider-content" :style="{height: authorizationInvalid || batchFlag === 'renewal' ? 'calc(100vh - 282px)' : 'calc(100vh - 226px)'}">
         <div class="slider-main">
           <p class="main-desc">
             <i18n-t keypath="已选择X个用户组" tag="div">
@@ -242,36 +249,48 @@
             />
           </div>
         </div>
-        <div class="slider-footer" :style="{height: authorizationInvalid ? '230px' : '170px'}">
+        <div class="slider-footer" :style="{height: authorizationInvalid || batchFlag === 'renewal' ? '230px' : '170px'}">
           <div class="footer-main" :class="authorizationInvalid ? '' : 'main-line-handover'">
+            <div v-if="batchFlag === 'renewal'">
+              <div class="main-line">
+                <p class="main-label">{{ t("续期对象") }}</p>
+                <span class="main-text">{{ t("用户") }}： {{ user.id }}({{ user.name }})</span>
+              </div>
+              <div class="main-line">
+                <p class="main-label">{{ t("续期时长") }}</p>
+                <TimeLimit ref="renewalRef" @change-time="handleChangeTime" />
+              </div>
+            </div>
             <div class="main-line">
-              <p
-                v-if="authorizationInvalid"
-                class="main-text"
-              >
-                <span v-if="batchFlag === 'remove'">{{ t('退出以上用户组，将导致') }}</span>
-                <span v-if="batchFlag === 'handover'">{{ t('移交以上用户组，将导致') }}</span>
+              <div v-if="batchFlag === 'remove' || batchFlag === 'handover'">
+                <p
+                  v-if="authorizationInvalid"
+                  class="main-text"
+                >
+                  <span v-if="batchFlag === 'remove'">{{ t('退出以上用户组，将导致') }}</span>
+                  <span v-if="batchFlag === 'handover'">{{ t('移交以上用户组，将导致') }}</span>
 
-                <span v-for="(item, index) in activeItems" :key="item.key">
-                  <i18n-t :keypath="item.keypath" tag="span">
-                    <span class="remove-num">{{ item.count }}</span>
+                  <span v-for="(item, index) in activeItems" :key="item.key">
+                    <i18n-t :keypath="item.keypath" tag="span">
+                      <span class="remove-num">{{ item.count }}</span>
+                    </i18n-t>
+                    <span>{{ index === activeItems.length - 1 ? '。' : '，' }}</span>
+                  </span>
+
+                  <span class="remove-num remove-detail" @click="handleDetail">{{ t("查看详情") }}</span>
+                  <p v-if="batchFlag === 'remove'">{{ t("请填写交接人，完成交接后才能成功退出。") }}</p>
+                  <p v-if="batchFlag === 'handover'">{{ t('请确认是否同步移交授权。') }}</p>
+                </p>
+
+                <p
+                  v-else-if="batchFlag === 'remove'"
+                  class="main-label-remove"
+                >
+                  <i18n-t keypath="确认退出以上X个用户组吗？" tag="span">
+                    <span class="remove-num">{{ checkData.operableCount }}</span>
                   </i18n-t>
-                  <span>{{ index === activeItems.length - 1 ? '。' : '，' }}</span>
-                </span>
-
-                <span class="remove-num remove-detail" @click="handleDetail">{{ t("查看详情") }}</span>
-                <p v-if="batchFlag === 'remove'">{{ t("请填写交接人，完成交接后才能成功退出。") }}</p>
-                <p v-if="batchFlag === 'handover'">{{ t('请确认是否同步移交授权。') }}</p>
-              </p>
-
-              <p
-                v-else-if="batchFlag === 'remove'"
-                class="main-label-remove"
-              >
-                <i18n-t keypath="确认退出以上X个用户组吗？" tag="span">
-                  <span class="remove-num">{{ checkData.operableCount }}</span>
-                </i18n-t>
-              </p>
+                </p>
+              </div>
 
               <div v-if="batchFlag === 'handover' || (batchFlag === 'remove' && checkData.needToHandover)">
                 <p class="main-label">{{t("移交给")}}</p>
@@ -358,9 +377,11 @@ const batchFlag = ref();
 const batchBtnLoading = ref(false);
 const handOverForm = ref(getHandOverForm());
 const checkData = ref();
+const renewalLoading = ref(false);
 const handoverLoading = ref(false);
 const removerLoading = ref(false);
 const loadingMap = {
+  renewal: renewalLoading,
   handover: handoverLoading,
   remove: removerLoading
 };
@@ -725,10 +746,15 @@ function cancelClear(batchFlag) {
  async function batchConfirm(batchFlag) {
   let res = null;
   const params = formatSelectParams();
-  delete params.renewalDuration;
 
   try {
-    if (batchFlag === 'handover') {
+    if (batchFlag === 'renewal') {
+      batchBtnLoading.value = true;
+      res = await http.batchRenewal(projectId.value, params);
+      // if (res) {
+      //   showRenewalSuccessInfoBox(res);
+      // }
+    } else if (batchFlag === 'handover') {
       if (!(await validateFormAndUser())) return;
       batchBtnLoading.value = true;
       res = await http.batchHandover(projectId.value, params);
@@ -772,6 +798,26 @@ async function validateRemoveCondition() {
   if (!checkData.value.needToHandover && checkData.value.operableCount) return true;
   return await validateFormAndUser();
 }
+
+// function showRenewalSuccessInfoBox(flowNo) {
+//   InfoBox({
+//     type: 'success',
+//     title: t('提交成功'),
+//     confirmText: t('查看进度'),
+//     cancelText: t('关闭'),
+//     class: 'info-box',
+//     content: h(
+//       'div', { class: 'info-content' },
+//       [
+//         h('p', { class: 'info-text' }, t('已成功提交续期申请，等待管理员或资源拥有者审批。')),
+//         h('p', { class: 'info-text' }, t('可在“我的申请”中查看进度。'))
+//       ]
+//     ),
+//     onConfirm() {
+//       window.open(`${window.location.origin}/console/permission/my-apply?flowNo=${flowNo}&type=handoverFromMe`, '_blank')
+//     }
+//   });
+// }
 
 function showHandoverSuccessInfoBox(flowNo) {
   InfoBox({
