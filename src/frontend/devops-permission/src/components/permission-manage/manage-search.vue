@@ -81,6 +81,11 @@
       :placeholder="filterTips"
       @search="handleSearch"
     />
+    <bk-checkbox
+      v-model="showOnlyExpiredPermissions"
+      size="small"
+      class="expired-per"
+    > {{ t('仅展示已过期权限') }} </bk-checkbox>
   </div>
 </template>
 
@@ -111,6 +116,7 @@ const hasNextPage = ref(false);
 const searchExpiredAt = ref([]);
 const expiredAtList = ref([]);
 const searchValue = ref([]);
+const showOnlyExpiredPermissions = ref(false)
 const searchResourceName = ref('');
 const filterTips = computed(() => searchData.value.map(item => item.name).join(' / '));
 const searchData = computed(() => [
@@ -182,6 +188,7 @@ const searchGroup = computed(() => ({
   relatedResourceType: serviceValue.value, // 所属服务
   relatedResourceCode: resourceValue.value, // 资源
   action: actionValue.value,  // 操作
+  showOnlyExpiredPermissions: showOnlyExpiredPermissions.value,
 }));
 const emit = defineEmits(['searchInit']);
 
@@ -330,12 +337,13 @@ function clearSearch() {
   box-shadow: 0 2px 4px 0 #1919290d;
 }
 .search-select {
-margin-right: 10px;
+  margin-right: 10px;
+  width: 14%;
 }
 
 .search-expired {
-display: flex;
-align-items: center;
+  display: flex;
+  align-items: center;
 
 .search-terms {
   white-space: nowrap;
@@ -350,7 +358,11 @@ align-items: center;
 }
 
 .multi-search {
-  width: 40%;
-  margin-left: 10px;
+  width: 15%;
+  margin: 0 10px;
+}
+
+.expired-per {
+  font-size: 12px;
 }
 </style>

@@ -26,6 +26,7 @@ interface MemberListParamsType {
   relatedResourceType?: string,
   relatedResourceCode?: string,
   action?: string,
+  showOnlyExpiredPermissions: boolean
 }
 
 export default defineStore('manageAside', () => {
@@ -123,6 +124,7 @@ export default defineStore('manageAside', () => {
       page: memberPagination.value.current,
       pageSize: memberPagination.value.limit,
       projectCode: projectId,
+      showOnlyExpiredPermissions: searchGroup.showOnlyExpiredPermissions
     };
 
     if (departedFlag) {

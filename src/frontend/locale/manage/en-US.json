@@ -400,5 +400,6 @@
     "制品库设置": "Artifact Library Settings",
     "选择项目": "Select Project",
     "同步中": "Synching",
-    "请选择组织/用户": "Please select organization/user"
+    "请选择组织/用户": "Please select organization/user",
+    "仅展示已过期权限": "Only display expired permissions"
 }

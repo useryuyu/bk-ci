@@ -65,6 +65,11 @@
       :get-menu-list="getMenuList"
       @search="handleSearch(searchValue)"
     />
+    <bk-checkbox
+      v-model="showOnlyExpiredPermissions"
+      size="small"
+      class="expired-per"
+    > {{ t('仅展示已过期权限') }} </bk-checkbox>
 </template>
 
 <script setup>
@@ -92,6 +97,7 @@ const hasNextPage = ref(false);
 const searchExpiredAt = ref([]);
 const expiredAtList = ref([])
 const searchValue = ref([]);
+const showOnlyExpiredPermissions = ref(false)
 const searchResourceName=ref();
 const filterTips = computed(() => {
   return searchData.value.map(item => item.name).join(' / ');
@@ -163,6 +169,7 @@ const searchGroup = computed(() => ({
   relatedResourceType: serviceValue.value,
   relatedResourceCode: resourceValue.value,
   action: actionValue.value,
+  showOnlyExpiredPermissions: showOnlyExpiredPermissions.value,
 }));
 const emit = defineEmits(['searchInit']);
 
@@ -191,6 +198,7 @@ function clearSearch () {
   serviceValue.value = '';
   resourceValue.value = '';
   actionValue.value = '';
+  showOnlyExpiredPermissions.value = false;
 }
 function handleSearch (value) {
   if(!value.length) return;
@@ -300,7 +308,11 @@ async function getMenuList (item, keyword) {
 }
 
 .multi-search {
-  width: 50%;
-  margin-left: 10px;
+  min-width: 20%;
+  margin: 0 10px;
+}
+
+.expired-per {
+  font-size: 12px;
 }
 </style>

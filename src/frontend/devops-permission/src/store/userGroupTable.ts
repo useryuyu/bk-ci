@@ -56,7 +56,8 @@ interface SearchParamsType {
   minExpiredAt?: number,
   maxExpiredAt?: number,
   groupName?: string,
-  uniqueManagerGroupsQueryFlag?: boolean
+  uniqueManagerGroupsQueryFlag?: boolean,
+  showOnlyExpiredPermissions?: boolean
 }
 
 export default defineStore('userGroupTable', () => {
@@ -161,7 +162,9 @@ export default defineStore('userGroupTable', () => {
     return dayjs(dateString).valueOf();
   }
   function getParams(searchGroup: any) {
-    const params: SearchParamsType = {};
+    const params: SearchParamsType = {
+      showOnlyExpiredPermissions: searchGroup.showOnlyExpiredPermissions
+    };
 
     if (searchGroup?.relatedResourceType) {
       params.relatedResourceType = searchGroup.relatedResourceType
@@ -198,7 +201,7 @@ export default defineStore('userGroupTable', () => {
   async function fetchUserGroupList(memberIdParam: string, projectIdParam: string, seacrhParams: SearchParamsType) {
     const params = getParams(seacrhParams);
     searchObj.value = {
-      ...['relatedResourceType', 'relatedResourceCode', 'action', 'minExpiredAt', 'maxExpiredAt', 'groupName', 'uniqueManagerGroupsQueryFlag']
+      ...['relatedResourceType', 'relatedResourceCode', 'action', 'minExpiredAt', 'maxExpiredAt', 'groupName', 'uniqueManagerGroupsQueryFlag', 'showOnlyExpiredPermissions']
         .reduce((acc, key) => {
           if (params[key]!== null && params[key] !== undefined) {
             acc[key] = params[key];
