@@ -23,7 +23,17 @@
       "newFlow": "新建创作流",
       "batchManage": "批量管理",
       "searchPlaceholder": "创作流名称/创建人/创作流组/创作环境",
-      "emptyState": "暂无数据"
+      "emptyState": "暂无数据",
+      "name": "创作流名称",
+      "groupName": "所在创作流组",
+      "lastExecution": "最近执行",
+      "executionTime": "执行时间",
+      "actions": "操作",
+      "execute": "执行",
+      "orderByAlpha": "按名称A-Z",
+      "orderByCreateTime": "按创建时间",
+      "orderByUpdateTime": "按修改时间",
+      "orderByExecuteTime": "按执行时间"
     }
   }
 }

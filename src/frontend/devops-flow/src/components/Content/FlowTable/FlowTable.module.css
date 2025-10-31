@@ -1,0 +1,14 @@
+.flowTable {
+  height: calc(100% - 56px);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* .moreFill:hover {
+  color: #3A84FF;
+  background: #e6e6e7;
+  border-radius: 50%;
+} */
