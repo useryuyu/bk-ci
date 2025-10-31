@@ -3,6 +3,10 @@
     "title": "Pipeline Flow",
     "welcome": "Welcome to Pipeline Flow",
     "description": "Configure and manage CI/CD pipeline workflows",
+    "noDataAvailable": "No data available",
+    "searchResultsEmpty": "Search results are empty",
+    "tryAdjustingKeywordsOrClearingFilters": "You can try adjusting the keywords or {0}",
+    "clearFilterCriteria": "clear filter criteria",
     "tabs": {
       "flow": "Flow",
       "template": "Template"
@@ -23,7 +27,19 @@
       "newFlow": "New Flow",
       "batchManage": "Batch Manage",
       "searchPlaceholder": "Flow Name/Creator/Flow Group/Environment",
-      "emptyState": "No Data"
+      "emptyState": "No Data",
+      "name": "Creation Flow Name",
+      "groupName": "Belonging Creation Flow Group",
+      "lastExecution": "Last Execution",
+      "executionTime": "Execution Time",
+      "actions": "Actions",
+      "execute": "Execute",
+      "orderByAlpha": "Order by Name A-Z",
+      "orderByCreateTime": "Order by Creation Time",
+      "orderByUpdateTime": "Order by Update Time",
+      "orderByExecuteTime": "Order by Execution Time",
+      "newFromTemplate": "Create New from Template",
+      "importFlow": "Import Creation Flow"
     }
   }
 }

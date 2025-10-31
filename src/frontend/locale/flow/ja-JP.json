@@ -3,6 +3,10 @@
     "title": "パイプラインフロー",
     "welcome": "パイプラインフローへようこそ",
     "description": "CI/CDパイプラインワークフローの設定と管理",
+    "noDataAvailable": "データがありません",
+    "searchResultsEmpty": "検索結果が空です",
+    "tryAdjustingKeywordsOrClearingFilters": "キーワードを調整するか、{0} をクリアしてみてください",
+    "clearFilterCriteria": "フィルター条件をクリア",
     "tabs": {
       "flow": "フロー",
       "template": "テンプレート"
@@ -23,7 +27,19 @@
       "newFlow": "新しいフロー",
       "batchManage": "一括管理",
       "searchPlaceholder": "フロー名/作成者/フローグループ/環境",
-      "emptyState": "データなし"
+      "emptyState": "データなし",
+      "name": "作成フロー名",
+      "groupName": "所属作成フローグループ",
+      "lastExecution": "最近の実行",
+      "executionTime": "実行時間",
+      "actions": "操作",
+      "execute": "実行",
+      "orderByAlpha": "名前順 A-Z",
+      "orderByCreateTime": "作成時間順",
+      "orderByUpdateTime": "更新時間順",
+      "orderByExecuteTime": "実行時間順",
+      "newFromTemplate": "テンプレートから新規作成",
+      "importFlow": "作成フローをインポート"
     }
   }
 }

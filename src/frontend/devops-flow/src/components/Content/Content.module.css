@@ -22,6 +22,10 @@
   margin: 0;
 }
 
+.newFlow {
+  min-width: 120px;
+}
+
 .searchBox {
   display: flex;
   align-items: center;

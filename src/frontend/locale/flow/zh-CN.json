@@ -3,6 +3,10 @@
     "title": "创作流",
     "welcome": "欢迎使用流水线流程",
     "description": "用于配置和管理CI/CD流水线流程",
+    "noDataAvailable": "暂无数据",
+    "searchResultsEmpty": "搜索结果为空",
+    "tryAdjustingKeywordsOrClearingFilters": "可以尝试 调整关键词 或 {0}",
+    "clearFilterCriteria": "清空筛选条件",
     "tabs": {
       "flow": "创作流",
       "template": "模板"
@@ -33,7 +37,9 @@
       "orderByAlpha": "按名称A-Z",
       "orderByCreateTime": "按创建时间",
       "orderByUpdateTime": "按修改时间",
-      "orderByExecuteTime": "按执行时间"
+      "orderByExecuteTime": "按执行时间",
+      "newFromTemplate": "从模板新建",
+      "importFlow": "导入创作流"
     }
   }
 }

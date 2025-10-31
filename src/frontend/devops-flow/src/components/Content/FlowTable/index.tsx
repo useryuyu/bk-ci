@@ -4,23 +4,14 @@ import { Button, Table, Loading } from "bkui-vue";
 import styles from "./FlowTable.module.css";
 import { ORDER_ENUM, FLOW_SORT_FILED } from '@/utils/flowConst.ts';
 import ExtMenu from '@/components/ExtMenu/index';
-
-interface Flow {
-  id: number;
-  name: string;
-  groupName: string;
-  lastExecution: string;
-  executionTime: string;
-  status: string;
-  creator: string;
-  updateTime: string;
-  flowAction: [];
-}
+import { type Flow } from '@/types/index'
+import EmptyTableStatus from '@/components/EmptyTable/index';
 
 export const FlowTable = defineComponent({
   name: "FlowTable",
   components: {
-    ExtMenu
+    ExtMenu,
+    EmptyTableStatus
   },
   props: {
     data: {
@@ -49,7 +40,7 @@ export const FlowTable = defineComponent({
       })
     }
   },
-  emits: ['sortChange', 'pageChange', 'limitChange'],
+  emits: ['sortChange', 'pageChange', 'limitChange', 'clearSearch'],
   setup(props, { emit }) {
     const { t } = useI18n();
     const maxHeight = ref();
@@ -125,19 +116,22 @@ export const FlowTable = defineComponent({
       <div
         class={styles.flowTable}
         ref={tableContainerRef}
-        
-      > <Loading loading={props.loading}>
+      >
+        <Loading loading={props.loading}>
           <Table
             data={props.data}
             columns={columns.value}
             max-height={maxHeight.value}
             border={['row', 'outer']}
             pagination={props.pagination}
-            emptyText={t('flow.content.emptyState')}
             onColumnSort={handleSort}
             onPageValueChange={handlePageChange}
             onPageLimitChange={handleLimitChange}
-          />
+          >
+            {{
+              empty: () => <EmptyTableStatus type="search-empty" onClear={() => emit('clearSearch')}/>,
+            }}
+          </Table>
         </Loading>
       </div>
     );

@@ -6,6 +6,7 @@ import { SvgIcon } from "@/components/SvgIcon";
 import { useRoute, useRouter } from 'vue-router';
 import { ORDER_ENUM, FLOW_SORT_FILED } from '@/utils/flowConst.ts';
 import styles from "./Content.module.css";
+import { type Flow } from '@/types/index'
 // import { statusIconMap } from '@/utils/flowStatus'
 
 export const Content = defineComponent({
@@ -24,7 +25,7 @@ export const Content = defineComponent({
     const currentSortIconName = computed(() => getSortIconName(currentSortType.value));
 
      const tableLoading = ref(false);
-     const flowList = ref([]);
+     const flowList = ref<Flow[]>([]);
      const pagination = ref({
        current: 1,
        count: 0,
@@ -52,6 +53,19 @@ export const Content = defineComponent({
           sortIcon: getSortIconName(sort.id)
       }))
     });
+
+    const newFlowList = computed(() => [
+      {
+        id: 'template',
+        name: t('flow.content.newFromTemplate'),
+        handler: handleNewFromTemplate
+      },
+      {
+        id: 'import',
+        name: t('flow.content.importFlow'),
+        handler: handleImportFlow
+      }
+    ]);
 
     watch([currentSortType, currentCollation], () => {
       fetchFlowList();
@@ -142,8 +156,20 @@ export const Content = defineComponent({
       }
     }
 
-    function handleFn() {
-      console.log(1111111);
+    function handleFn(row: Flow) {
+      console.log(1111111, row);
+    }
+
+    function handleClearSearch() {
+      console.log('清空搜索条件');
+    }
+
+    function handleNewFromTemplate() {
+      console.log('从模板新建创作流');
+    }
+
+    function handleImportFlow() {
+      console.log('导入创作流');
     }
 
     function updateQuery () {
@@ -219,7 +245,39 @@ export const Content = defineComponent({
         </div>
         <div class={styles.tableContainer}>
         <div class={styles.toolbar}>
-          <Button theme="primary">{t('flow.content.newFlow')}</Button>
+          <Dropdown
+            trigger="click"
+            popover-options={{
+              clickContentAutoHide: true,
+            }}
+          >
+            {{
+              default: () => (
+                <Button theme="primary">
+                  <SvgIcon 
+                    name='add-small'
+                    size={22}
+                  />
+                  {t('flow.content.newFlow')}
+                </Button>
+              ),
+              content: () => (
+                <Dropdown.DropdownMenu>
+                  {
+                    newFlowList.value.map(item => (
+                      <Dropdown.DropdownItem
+                        key={item.id}
+                        onClick={item.handler}
+                        class={styles.newFlow}
+                      >
+                        {item.name}
+                      </Dropdown.DropdownItem>
+                    ))
+                  }
+                </Dropdown.DropdownMenu>
+              ),
+            }}
+          </Dropdown>
           <Button>{t('flow.content.batchManage')}</Button>
           <div class={styles.searchBox}>
             <Input 
@@ -276,6 +334,7 @@ export const Content = defineComponent({
           onSortChange={handleTableSortChange}
           onPageChange={handlePageChange}
           onLimitChange={handleLimitChange}
+          onClearSearch={handleClearSearch}
         />
           
         </div>

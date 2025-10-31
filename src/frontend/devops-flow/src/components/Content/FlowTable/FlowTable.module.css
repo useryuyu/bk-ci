@@ -4,11 +4,5 @@
 
 .actions {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-sm);
 }
-
-/* .moreFill:hover {
-  color: #3A84FF;
-  background: #e6e6e7;
-  border-radius: 50%;
-} */
