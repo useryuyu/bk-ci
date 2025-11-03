@@ -34,7 +34,7 @@ export default defineComponent({
     const hasShow = ref(false);
     const bodyEle = computed(() => document.getElementsByTagName('body')[0])
 
-    function getTooltips (item: MenuItem) {
+    function getTooltips(item: MenuItem) {
       return {
         content: item?.tooltips,
         disabled: !item?.tooltips,
@@ -42,18 +42,18 @@ export default defineComponent({
       };
     };
 
-    function clickMenuItem (item: MenuItem) {
+    function clickMenuItem(item: MenuItem) {
       if (item.disable) return;
-      
+
       hasShow.value = false;
       item.handler(props.data, item);
     };
 
-    function handleShowMenu () {
+    function handleShowMenu() {
       hasShow.value = true;
     };
 
-    function handleHideMenu () {
+    function handleHideMenu() {
       hasShow.value = false;
     };
 

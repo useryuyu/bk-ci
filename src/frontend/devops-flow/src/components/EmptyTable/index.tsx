@@ -23,7 +23,7 @@ export default defineComponent({
     };
 
     return () => (
-      <Exception type={props.type}>
+      <Exception type={props.type} class={styles.exceptionCont}>
         <div class={styles.exception}>{typeMap[props.type]}</div>
         {
           props.type === 'search-empty'

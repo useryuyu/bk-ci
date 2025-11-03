@@ -26,6 +26,10 @@
   min-width: 120px;
 }
 
+.newFlow:hover {
+  color: var(--color-primary);
+}
+
 .searchBox {
   display: flex;
   align-items: center;

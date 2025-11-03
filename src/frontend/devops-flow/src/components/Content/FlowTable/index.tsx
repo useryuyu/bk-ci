@@ -17,7 +17,7 @@ export const FlowTable = defineComponent({
     data: {
       type: Array as PropType<Flow[]>,
       required: true,
-      default: ()=>[]
+      default: () => []
     },
     loading: {
       type: Boolean,
@@ -51,9 +51,9 @@ export const FlowTable = defineComponent({
     const tableContainerRef = ref<HTMLDivElement>();
 
     const columns = computed(() => [
-      { 
-        label: t('flow.content.name'), 
-        field: "name", 
+      {
+        label: t('flow.content.name'),
+        field: "name",
         sort: {
           value: props.sortType === FLOW_SORT_FILED.flowName && props.collation ? props.collation : null,
           sortScope: 'all'
@@ -61,18 +61,18 @@ export const FlowTable = defineComponent({
       },
       { label: t('flow.content.groupName'), field: "groupName" },
       { label: t('flow.content.lastExecution'), field: "lastExecution" },
-      { 
-        label: t('flow.content.executionTime'), 
-        field: "executionTime", 
+      {
+        label: t('flow.content.executionTime'),
+        field: "executionTime",
         sort: {
           value: props.sortType === FLOW_SORT_FILED.latestBuildStartDate && props.collation ? props.collation : null,
           sortScope: 'all'
         }
       },
-      { 
-        label: t('flow.content.actions'), 
+      {
+        label: t('flow.content.actions'),
         field: "actions",
-        render: ({ row }:any) => {
+        render: ({ row }: any) => {
           return (
             <div class={styles.actions}>
               <Button text theme="primary">{t('flow.content.execute')}</Button>
@@ -82,7 +82,7 @@ export const FlowTable = defineComponent({
         }
       }
     ]);
-    
+
     onMounted(() => {
       updateTableHeight()
       window.addEventListener('resize', updateTableHeight)
@@ -97,7 +97,7 @@ export const FlowTable = defineComponent({
         maxHeight.value = tableContainerRef.value.offsetHeight;
       }
     }
-    
+
     function handleSort({ column, type }: any) {
       const sortType = fieldToSortTypeMap[column.field];
       const collation = type;
@@ -129,7 +129,7 @@ export const FlowTable = defineComponent({
             onPageLimitChange={handleLimitChange}
           >
             {{
-              empty: () => <EmptyTableStatus type="search-empty" onClear={() => emit('clearSearch')}/>,
+              empty: () => <EmptyTableStatus type="empty" onClear={() => emit('clearSearch')} />,
             }}
           </Table>
         </Loading>

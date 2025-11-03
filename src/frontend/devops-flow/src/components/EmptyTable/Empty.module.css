@@ -14,14 +14,16 @@
   font-size: var(--font-size-xs);
 }
 
-:global(.bk-exception-img) {
-  margin-top: var(--spacing-xl) !important;
-  width: 320px !important;
-  height: auto !important;
-  object-fit: contain !important;
-}
-
-:global(.bk-exception-footer) {
-  margin-top: -12px !important;
-  margin-bottom: 68px !important;
+.exceptionCont {
+  :global(.bk-exception-img) {
+    margin-top: var(--spacing-xl) !important;
+    width: 320px !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+  
+  :global(.bk-exception-footer) {
+    margin-top: -12px !important;
+    margin-bottom: 68px !important;
+  }
 }

@@ -1,71 +1,76 @@
-import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import { defineComponent, ref, computed, onMounted, watch } from "vue";
+import { useRoute, useRouter } from 'vue-router';
 import { Button, Input, Dropdown } from "bkui-vue";
+import { type Flow } from '@/types/index'
+import styles from "./Content.module.css";
 import { FlowTable } from "./FlowTable";
 import { SvgIcon } from "@/components/SvgIcon";
-import { useRoute, useRouter } from 'vue-router';
+import ImportFlowPopup from '@/components/ImportFlowPopup'
+import NewFlowPopup from './NewFlowPopup'
+
 import { ORDER_ENUM, FLOW_SORT_FILED } from '@/utils/flowConst.ts';
-import styles from "./Content.module.css";
-import { type Flow } from '@/types/index'
 // import { statusIconMap } from '@/utils/flowStatus'
 
 export const Content = defineComponent({
   name: "Content",
   components: {
     SvgIcon,
+    ImportFlowPopup,
   },
   setup() {
     const { t } = useI18n();
     const route = useRoute();
     const router = useRouter();
-    
+
     const sortShow = ref(false);
     const currentSortType = ref((route.query.sortType as string) || localStorage.getItem('flowSortType') || FLOW_SORT_FILED.flowName);
     const currentCollation = ref((route.query.collation as string) || localStorage.getItem('flowSortCollation') || ORDER_ENUM.ascending);
     const currentSortIconName = computed(() => getSortIconName(currentSortType.value));
 
-     const tableLoading = ref(false);
-     const flowList = ref<Flow[]>([]);
-     const pagination = ref({
-       current: 1,
-       count: 0,
-       limit: 20
-     });
+    const tableLoading = ref(false);
+    const flowList = ref<Flow[]>([]);
+    const pagination = ref({
+      current: 1,
+      count: 0,
+      limit: 20
+    });
 
     const sortList = computed(() => {
       return [
-          {
-              id: FLOW_SORT_FILED.flowName,
-              name: t('flow.content.orderByAlpha')
-          }, {
-            id: FLOW_SORT_FILED.createTime,
-            name: t('flow.content.orderByCreateTime')
-          },{
-            id: FLOW_SORT_FILED.updateTime,
-            name: t('flow.content.orderByUpdateTime')
-          }, {
-              id: FLOW_SORT_FILED.latestBuildStartDate,
-              name: t('flow.content.orderByExecuteTime')
-          }
+        {
+          id: FLOW_SORT_FILED.flowName,
+          name: t('flow.content.orderByAlpha')
+        }, {
+          id: FLOW_SORT_FILED.createTime,
+          name: t('flow.content.orderByCreateTime')
+        }, {
+          id: FLOW_SORT_FILED.updateTime,
+          name: t('flow.content.orderByUpdateTime')
+        }, {
+          id: FLOW_SORT_FILED.latestBuildStartDate,
+          name: t('flow.content.orderByExecuteTime')
+        }
       ].map(sort => ({
-          ...sort,
-          active: isActiveSort(sort.id),
-          sortIcon: getSortIconName(sort.id)
+        ...sort,
+        active: isActiveSort(sort.id),
+        sortIcon: getSortIconName(sort.id)
       }))
     });
 
     const newFlowList = computed(() => [
       {
-        id: 'template',
-        name: t('flow.content.newFromTemplate'),
+        text: t('flow.content.newFromTemplate'),
         handler: handleNewFromTemplate
       },
       {
-        id: 'import',
-        name: t('flow.content.importFlow'),
+        text: t('flow.content.importFlow'),
         handler: handleImportFlow
       }
     ]);
+
+    const newFromTemplatePopupShow = ref(false);
+    const importFlowPopupShow = ref(false);
 
     watch([currentSortType, currentCollation], () => {
       fetchFlowList();
@@ -127,26 +132,23 @@ export const Content = defineComponent({
             },
           ].map(item => ({
             ...item,
-              flowAction: [{
-                text: '禁用' || '启用',
-                tooltips: '66666666',
-                handler: handleFn
-              },{
-                text: '添加至',
-                handler: handleFn
-              },{
-                text: '复制创作流',
-                handler: handleFn
-              },{
-                text: '另存为模板',
-                handler: handleFn
-              },{
-                text: '删除',
-                handler: handleFn
-              },{
-                text: '添加至',
-                handler: handleFn
-              }
+            flowAction: [{
+              text: t('flow.content.禁用') || t('flow.content.启用'),
+              tooltips: '66666666',
+              handler: handleFn
+            }, {
+              text: t('flow.content.添加至'),
+              handler: handleFn
+            }, {
+              text: t('flow.content.复制创作流'),
+              handler: handleFn
+            }, {
+              text: t('flow.content.另存为模板'),
+              handler: handleFn
+            }, {
+              text: t('flow.content.删除'),
+              handler: handleFn
+            }
             ]
           }))
           tableLoading.value = false;
@@ -166,28 +168,30 @@ export const Content = defineComponent({
 
     function handleNewFromTemplate() {
       console.log('从模板新建创作流');
+      newFromTemplatePopupShow.value = !newFromTemplatePopupShow.value
     }
 
     function handleImportFlow() {
       console.log('导入创作流');
+      importFlowPopupShow.value = !importFlowPopupShow.value
     }
 
-    function updateQuery () {
+    function updateQuery() {
       const queryParams: any = {
         ...route.query,
         sortType: currentSortType.value,
-        ...(currentCollation.value ? {collation: currentCollation.value} : {})
+        ...(currentCollation.value ? { collation: currentCollation.value } : {})
       };
       router.push({
         query: queryParams
       });
     }
 
-    function isActiveSort (sortType: string) {
+    function isActiveSort(sortType: string) {
       return currentSortType.value === sortType;
     }
 
-    function getSortIconName (sortType: string) {
+    function getSortIconName(sortType: string) {
       if (isActiveSort(sortType) && currentCollation.value && currentCollation.value !== 'null') {
         return `sort-${currentCollation.value.toLowerCase()}`;
       }
@@ -218,10 +222,10 @@ export const Content = defineComponent({
       updateQuery();
     }
 
-    function handleTableSortChange({ sortType, collation }: { sortType: string, collation: string}) {
+    function handleTableSortChange({ sortType, collation }: { sortType: string, collation: string }) {
       currentSortType.value = sortType;
       currentCollation.value = collation;
-      
+
       localStorage.setItem('flowSortType', sortType);
       localStorage.setItem('flowSortCollation', collation);
       updateQuery();
@@ -244,78 +248,33 @@ export const Content = defineComponent({
           <h2 class={styles.title}>{t('flow.content.allFlows')}</h2>
         </div>
         <div class={styles.tableContainer}>
-        <div class={styles.toolbar}>
-          <Dropdown
-            trigger="click"
-            popover-options={{
-              clickContentAutoHide: true,
-            }}
-          >
-            {{
-              default: () => (
-                <Button theme="primary">
-                  <SvgIcon 
-                    name='add-small'
-                    size={22}
-                  />
-                  {t('flow.content.newFlow')}
-                </Button>
-              ),
-              content: () => (
-                <Dropdown.DropdownMenu>
-                  {
-                    newFlowList.value.map(item => (
-                      <Dropdown.DropdownItem
-                        key={item.id}
-                        onClick={item.handler}
-                        class={styles.newFlow}
-                      >
-                        {item.name}
-                      </Dropdown.DropdownItem>
-                    ))
-                  }
-                </Dropdown.DropdownMenu>
-              ),
-            }}
-          </Dropdown>
-          <Button>{t('flow.content.batchManage')}</Button>
-          <div class={styles.searchBox}>
-            <Input 
-              placeholder={t('flow.content.searchPlaceholder')}
-              left-icon="search"
-            />
+          <div class={styles.toolbar}>
             <Dropdown
               trigger="click"
-              is-show={sortShow.value}
               popover-options={{
                 clickContentAutoHide: true,
               }}
             >
               {{
                 default: () => (
-                  <div class={styles.iconSortButton}>
-                    <SvgIcon 
-                      name={currentSortIconName.value}
-                      class={styles.sortIcon}
-                      size={10}
+                  <Button theme="primary">
+                    <SvgIcon
+                      name='add-small'
+                      size={22}
                     />
-                  </div>
+                    {t('flow.content.newFlow')}
+                  </Button>
                 ),
                 content: () => (
                   <Dropdown.DropdownMenu>
                     {
-                      sortList.value.map(item => (
+                      newFlowList.value.map(item => (
                         <Dropdown.DropdownItem
-                          key={item.id}
-                          class={`${styles.sortItem} ${item.active ? styles.active : ''}`}
-                          onClick={() => changeSortType(item.id)}
+                          key={item.text}
+                          onClick={item.handler}
+                          class={styles.newFlow}
                         >
-                          {item.name}
-                          <SvgIcon 
-                            name={item.sortIcon}
-                            class={styles.sortItemIcon}
-                            size={10}
-                          />
+                          {item.text}
                         </Dropdown.DropdownItem>
                       ))
                     }
@@ -323,21 +282,73 @@ export const Content = defineComponent({
                 ),
               }}
             </Dropdown>
+            <Button>{t('flow.content.batchManage')}</Button>
+            <div class={styles.searchBox}>
+              <Input
+                placeholder={t('flow.content.searchPlaceholder')}
+                left-icon="search"
+              />
+              <Dropdown
+                trigger="click"
+                is-show={sortShow.value}
+                popover-options={{
+                  clickContentAutoHide: true,
+                }}
+              >
+                {{
+                  default: () => (
+                    <div class={styles.iconSortButton}>
+                      <SvgIcon
+                        name={currentSortIconName.value}
+                        class={styles.sortIcon}
+                        size={10}
+                      />
+                    </div>
+                  ),
+                  content: () => (
+                    <Dropdown.DropdownMenu>
+                      {
+                        sortList.value.map(item => (
+                          <Dropdown.DropdownItem
+                            key={item.id}
+                            class={`${styles.sortItem} ${item.active ? styles.active : ''}`}
+                            onClick={() => changeSortType(item.id)}
+                          >
+                            {item.name}
+                            <SvgIcon
+                              name={item.sortIcon}
+                              class={styles.sortItemIcon}
+                              size={10}
+                            />
+                          </Dropdown.DropdownItem>
+                        ))
+                      }
+                    </Dropdown.DropdownMenu>
+                  ),
+                }}
+              </Dropdown>
+            </div>
           </div>
+          <FlowTable
+            data={flowList.value}
+            loading={tableLoading.value}
+            sortType={currentSortType.value}
+            collation={currentCollation.value}
+            pagination={pagination.value}
+            onSortChange={handleTableSortChange}
+            onPageChange={handlePageChange}
+            onLimitChange={handleLimitChange}
+            onClearSearch={handleClearSearch}
+          />
         </div>
-        <FlowTable 
-          data={flowList.value} 
-          loading={tableLoading.value}
-          sortType={currentSortType.value}
-          collation={currentCollation.value}
-          pagination={pagination.value}
-          onSortChange={handleTableSortChange}
-          onPageChange={handlePageChange}
-          onLimitChange={handleLimitChange}
-          onClearSearch={handleClearSearch}
+
+        <NewFlowPopup
+          v-model={newFromTemplatePopupShow.value}
         />
-          
-        </div>
+
+        <ImportFlowPopup
+          v-model={importFlowPopupShow.value}
+        />
       </div>
     );
   },
