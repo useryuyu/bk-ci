@@ -251,7 +251,7 @@ export const Content = defineComponent({
     return () => (
       <div class={styles.content}>
         <div class={styles.toolbar}>
-          <h2 class={styles.title}>{t('flow.content.allFlows')}</h2>
+          <h2 class={styles.title}>{t('flow.common.allFlows')}</h2>
         </div>
         <div class={styles.tableContainer}>
           <div class={styles.toolbar}>
