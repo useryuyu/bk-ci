@@ -21,7 +21,7 @@ export default defineComponent({
       <Exception type="empty" class={styles.exceptionCont}>
         <div class={styles.exception}>
           {
-            props.title ? props.title : t('flow.noDataAvailable')
+            props.title ? props.title : t('flow.common.noData')
           }
         </div>
         {

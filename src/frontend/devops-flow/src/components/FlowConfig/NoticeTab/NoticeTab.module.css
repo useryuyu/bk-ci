@@ -1,16 +1,30 @@
 .noticeTab {
-  padding: 20px;
-  background-color: #f3e5f5;
-  border-radius: 4px;
-  border: 1px solid #ce93d8;
+  padding: var(--spacing-lg);
+  padding-right: var(--spacing-xl);
 }
 
-.noticeTab h2 {
-  color: #7b1fa2;
-  margin-bottom: 16px;
+.content {
+  margin-top: var(--spacing-lg);
 }
 
-.noticeTab p {
-  color: #666;
-  line-height: 1.5;
+.collapse {
+  :global(.bk-collapse-icon svg) {
+    font-size: 10px;
+    color: var(--color-text-tertiary);
+  }
+  :global(.bk-collapse-item) {
+    box-shadow: none;
+  }
+  :global(.bk-collapse-icon) {
+    top: 17px;
+  }
+  :global(.bk-collapse-header) {
+    height: 40px;
+    background-color: var(--bg-secondary);
+  }
+  :global(.bk-collapse-title) {
+    font-size: var(--font-size-sm);
+    margin-left: 18px;
+    color: #3F3E3E;
+  }
 }

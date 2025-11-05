@@ -57,7 +57,7 @@ export default defineComponent({
         {{
           header: () => (
             <div class={styles.header}>
-              <span>{t('flow.content.newCreationFlow')}</span>
+              <span>{t('flow.content.newFlow')}</span>
               <div class={styles.stepContent}>
                 <Steps
                   theme="primary"
@@ -108,7 +108,7 @@ export default defineComponent({
                 loading={isFormLoading.value}
                 onClick={handleCancel}
               >
-                {t('flow.content.cancel')}
+                {t('flow.common.cancel')}
               </Button>
             </>
           ),

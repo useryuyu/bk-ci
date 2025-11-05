@@ -66,26 +66,6 @@
   line-height: 22px;
 }
 
-.authoringHeader {
-  height: 40px;
-  line-height: 40px;
-  padding: 0 var(--spacing-lg);
-  background: var(--bg-secondary);
-}
-
-.authoringHeader {
-  :global(.bk-input) {
-    border: none;
-    width: 120px;
-  }
-  :global(.bk-select-trigger) {
-    width: 120px;
-  }
-  :global(.bk-select .bk-input--text) {
-    background-color: var(--bg-secondary);
-  }
-}
-
 .titleSet {
   display: flex;
   align-items: center;
@@ -99,46 +79,6 @@
   margin-right: 6px;
   vertical-align: middle;
   margin-top: 2px;
-}
-
-.authoringContent {
-  min-height: 176px;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-sm);
-  margin-bottom: var(--spacing-xl);
-}
-
-.envItem:not(:last-child) {
-  margin-bottom: 15px;
-}
-
-.envItemTit {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--spacing-xs);
-  font-size: var(--font-size-xs);
-  color: var(--color-text-tertiary);
-}
-
-.setLine:hover {
-  color: var(--color-primary);
-}
-
-.nodeTag {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--spacing-sm);
-}
-
-.noData {
-  margin-top: 58px;
-  text-align: center;
-  font-size: var(--font-size-xs);
-  color: var(--color-text-disabled);
 }
 
 /* 选择模板 */

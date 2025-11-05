@@ -15,7 +15,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     const typeMap = {
-      empty: t('flow.noDataAvailable'),
+      empty: t('flow.common.noData'),
       'search-empty': t('flow.searchResultsEmpty'),
     };
     function handleClear() {

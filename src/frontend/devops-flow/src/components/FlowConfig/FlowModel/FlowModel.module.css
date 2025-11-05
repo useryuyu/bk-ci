@@ -1,7 +1,7 @@
 .flowModel {
-  padding: 16px;
+  padding: var(--spacing-lg);
 }
 
 .modelContent {
-  margin-top: 16px;
+  margin-top: var(--spacing-lg);
 }
