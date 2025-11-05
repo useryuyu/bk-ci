@@ -47,7 +47,7 @@ export default defineComponent({
       document.removeEventListener('click', handleClickOutside);
     });
 
-    const handleClickOutside = (event: MouseEvent) => {
+    function handleClickOutside(event: MouseEvent) {
       if (isPopoverVisible.value && selectRef.value) {
         const selectElement = selectRef.value.$el;
         const popoverElement = document.querySelector('.bk-select-search-wrapper');
@@ -61,7 +61,7 @@ export default defineComponent({
       }
     }
 
-    const showPopover = (event: MouseEvent) => {
+    function showPopover(event: MouseEvent) {
       const popoverElement = document.querySelector('.bk-select-search-wrapper');
       const isClickInsidePopover = popoverElement?.contains(event.target as Node);
 
@@ -72,8 +72,12 @@ export default defineComponent({
       }
     }
 
-    const handlePopoverHide = (value: boolean) => {
+    function handlePopoverHide(value: boolean) {
       isPopoverVisible.value = value;
+    }
+
+    function goEnvironment() {
+      console.log('点击，新窗口打开「环境管理」- 对应创作环境的详情页');
     }
 
     return () => (
@@ -145,11 +149,13 @@ export default defineComponent({
                   <div class={styles.envItem}>
                     <p class={styles.envItemTit}>
                       {t('flow.content.creationNode')}
-                      <SvgIcon
-                        name='set-line'
-                        size={12}
-                        class="cursor-pointer"
-                      />
+                      <span onClick={goEnvironment}>
+                        <SvgIcon
+                          name='set-line'
+                          size={12}
+                          class={`cursor-pointer ${styles.setLine}`}
+                        />
+                      </span>
                     </p>
                     <div class={styles.nodeTag}>
                       <Tag>ins-be4830935d0ed3db</Tag>

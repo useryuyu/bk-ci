@@ -1,0 +1,16 @@
+.settingTab {
+  padding: 20px;
+  background-color: #e8f5e8;
+  border-radius: 4px;
+  border: 1px solid #a5d6a7;
+}
+
+.settingTab h2 {
+  color: #2e7d32;
+  margin-bottom: 16px;
+}
+
+.settingTab p {
+  color: #666;
+  line-height: 1.5;
+}

@@ -7,6 +7,13 @@
     "searchResultsEmpty": "検索結果が空です",
     "tryAdjustingKeywordsOrClearingFilters": "キーワードを調整するか、{0} をクリアしてみてください",
     "clearFilterCriteria": "フィルター条件をクリア",
+    "flowModel": "作成フロー編成",
+    "authoringEnv": "作成環境",
+    "trigger": "トリガーイベント",
+    "noticeSetting": "通知設定",
+    "baseSetting": "基本設定",
+    "MODEL": "UIモード",
+    "YAML": "コードモード",
     "tabs": {
       "flow": "フロー",
       "template": "テンプレート"
@@ -69,7 +76,17 @@
       "addTo": "追加",
       "copyCreationFlow": "作成フローをコピー",
       "saveAsTemplate": "テンプレートとして保存",
-      "delete": "削除"
+      "delete": "削除",
+      "orchestrateFromScratch": "0から編成を開始する",
+      "mode": "モード",
+      "freeMode": "フリーモード",
+      "constraintMode": "制約モード",
+      "cloneTemplateSettings": "テンプレート設定をクローン",
+      "notificationSettings": "通知設定",
+      "concurrencyPolicy": "並行ポリシー",
+      "tag": "タグ",
+      "blankTemplateNoOrchestration": "空白テンプレートには編成がありません",
+      "createToAddFirstStage": "作成後、最初のステージを追加開始できます"
     }
   }
 }

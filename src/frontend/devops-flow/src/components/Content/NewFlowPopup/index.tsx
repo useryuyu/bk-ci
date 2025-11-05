@@ -35,6 +35,10 @@ export default defineComponent({
       curStep.value = index;
     }
 
+    function handleChangeStep() {
+      curStep.value = curStep.value === 1 ? 2 : 1;
+    }
+
     function handleConfirm() { }
 
     function handleCancel() {
@@ -83,18 +87,22 @@ export default defineComponent({
                 class={styles.btn}
                 loading={isFormLoading.value}
                 theme="primary"
-                onClick={handleConfirm}
+                onClick={handleChangeStep}
               >
-                {t('flow.content.previousStep') || t('flow.content.nextStep')}
+                {curStep.value === 1 ? t('flow.content.nextStep') : t('flow.content.previousStep')}
               </Button>
-              <Button
-                class={styles.btn}
-                loading={isFormLoading.value}
-                theme="primary"
-                onClick={handleConfirm}
-              >
-                {t('flow.content.createAndStartOrchestrating')}
-              </Button>
+              {
+                curStep.value === 2 ? (
+                  <Button
+                    class={styles.btn}
+                    loading={isFormLoading.value}
+                    theme="primary"
+                    onClick={handleConfirm}
+                  >
+                    {t('flow.content.createAndStartOrchestrating')}
+                  </Button>
+                ) : null
+              }
               <Button
                 class={styles.btn}
                 loading={isFormLoading.value}

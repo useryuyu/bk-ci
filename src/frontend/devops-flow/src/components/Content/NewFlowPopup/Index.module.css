@@ -10,26 +10,31 @@
 
 .newFlowPopup {
   :global(.bk-step:not(.current):not(.done) .bk-step-indicator) {
-    color: var(--color-text-medium-black) !important;
-    background-color: #EAEBF0 !important;
-    border-color: #EAEBF0 !important;
+    color: var(--color-text-medium-black);
+    background-color: #EAEBF0;
+    border-color: #EAEBF0;
   }
 
   :global(.bk-step.done .bk-step-indicator) {
-    color: var(--color-primary) !important;
-    background-color: var(--bg-hover-active) !important;
-    border-color: var(--bg-hover-active) !important;
+    color: var(--color-primary);
+    background-color: var(--bg-hover-active);
+    border-color: var(--bg-hover-active);
   }
 
   :global(.bk-dialog-content) {
-    padding: var(--spacing-xl) !important;
-    margin: 0 !important;
-    background: var(--bg-secondary) !important;
+    padding: 0;
+    margin: 0;
+  }
+
+  :global(.bk-modal-content) {
+    padding: var(--spacing-xl);
+    padding-bottom: 0;
+    background: var(--bg-secondary); 
   }
 }
 
 .content {
-  height: 595px;
+  height: 566px;
   overflow-y: auto;
 }
 
@@ -118,6 +123,10 @@
   color: var(--color-text-tertiary);
 }
 
+.setLine:hover {
+  color: var(--color-primary);
+}
+
 .nodeTag {
   display: flex;
   align-items: center;
@@ -132,26 +141,114 @@
   color: var(--color-text-disabled);
 }
 
-
-
-
-
-
-
-
 /* 选择模板 */
 .selectTemplate {
-
+  height: 100%;
 }
 
+.headerAside {
+  display: flex;
+  align-items: center;
+  height: 88px;
+  padding: var(--spacing-lg);
+  background-color: var(--bg-primary);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-lg);
+}
 
+.settingAside {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  margin-left: 64px;
+}
 
+.activeSelect {
+  display: flex;
+  align-items: center;
+  width: 380px;
+  height: 56px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
 
+.activeImage {
+  height: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  color: var(--color-text-tertiary);
+}
 
+.activeLabel {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
 
+.activeDesc {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}
 
+.selectIcon {
+  width: 35px;
+  height: 100%;
+  background: var(--bg-secondary);
+  text-align: center;
+  line-height: 56px;
+  cursor: pointer;
+  color: var(--color-text-medium-black);
+}
 
+.modelSelect {
+  margin-right: 120px;
+}
 
+.settingLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-medium-black);
+  margin-bottom: 9px;
+}
+
+.cloneTemplateSet {
+  :global(.bk-checkbox-label) {
+    font-size: var(--font-size-xs);
+  }
+}
+
+.contentConfig {
+  display: flex;
+  height: calc(100% - 104px);
+  box-shadow: var(--shadow-sm);
+  border-radius: 4px 4px 2px 2px;
+}
+
+.configAside {
+  width: 160px;
+  background: var(--bg-tertiary);
+  border-right: 1px solid var(--border-color);
+  padding: var(--spacing-xs) 0;
+}
+
+.configItem {
+  height: 40px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-medium-black);
+  line-height: 22px;
+  padding: 9px 32px;
+  cursor: pointer;
+}
+
+.configActive {
+  background-color: var(--bg-hover-active);
+  color: var(--color-primary);
+  border-right: 2px solid var(--color-primary);
+}
+
+.configContent {
+  flex: 1;
+  background-color: var(--bg-primary);
+}
 
 .btn {
   margin-left: var(--spacing-sm);

@@ -1,7 +1,7 @@
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Exception } from 'bkui-vue';
-import styles from "./Empty.module.css";
+import styles from "./EmptyTable.module.css";
 
 export default defineComponent({
   name: 'EmptyTableStatus',
@@ -18,7 +18,7 @@ export default defineComponent({
       empty: t('flow.noDataAvailable'),
       'search-empty': t('flow.searchResultsEmpty'),
     };
-    const handleClear = () => {
+    function handleClear() {
       emit('clear');
     };
 

@@ -7,6 +7,13 @@
     "searchResultsEmpty": "搜索结果为空",
     "tryAdjustingKeywordsOrClearingFilters": "可以尝试 调整关键词 或 {0}",
     "clearFilterCriteria": "清空筛选条件",
+    "flowModel": "创作流编排",
+    "authoringEnv": "创作环境",
+    "trigger": "触发事件",
+    "noticeSetting": "通知配置",
+    "baseSetting": "基础设置",
+    "MODEL": "UI方式",
+    "YAML": "Code方式",
     "tabs": {
       "flow": "创作流",
       "template": "模板"
@@ -69,7 +76,17 @@
       "addTo": "添加至",
       "copyCreationFlow": "复制创作流",
       "saveAsTemplate": "另存为模板",
-      "delete": "删除"
+      "delete": "删除",
+      "orchestrateFromScratch": "从 0 开始编排",
+      "mode": "模式",
+      "freeMode": "自由模式",
+      "constraintMode": "约束模式",
+      "cloneTemplateSettings": "克隆模板设置",
+      "notificationSettings": "通知设置",
+      "concurrencyPolicy": "并发策略",
+      "tag": "标签",
+      "blankTemplateNoOrchestration": "空白模板暂无编排",
+      "createToAddFirstStage": "创建后即可开始添加第一个 Stage"
     }
   }
 }

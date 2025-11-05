@@ -10,3 +10,4 @@ export const FLOW_SORT_FILED = {
 }
 export const UI_MODE = 'MODEL'
 export const CODE_MODE = 'YAML'
+export const modeList = [CODE_MODE, UI_MODE]

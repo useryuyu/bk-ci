@@ -1,11 +1,11 @@
 import { defineComponent, onMounted, onUnmounted, ref, computed, type PropType } from "vue";
 import { useI18n } from "vue-i18n";
-import { Button, Table, Loading } from "bkui-vue";
-import styles from "./FlowTable.module.css";
 import { ORDER_ENUM, FLOW_SORT_FILED } from '@/utils/flowConst.ts';
+import { Button, Table, Loading } from "bkui-vue";
 import ExtMenu from '@/components/ExtMenu/index';
-import { type Flow } from '@/types/index'
 import EmptyTableStatus from '@/components/EmptyTable/index';
+import { type Flow } from '@/types/index'
+import styles from "./FlowTable.module.css";
 
 export const FlowTable = defineComponent({
   name: "FlowTable",

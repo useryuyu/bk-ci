@@ -7,6 +7,13 @@
     "searchResultsEmpty": "Search results are empty",
     "tryAdjustingKeywordsOrClearingFilters": "You can try adjusting the keywords or {0}",
     "clearFilterCriteria": "clear filter criteria",
+    "flowModel": "Creation Flow Orchestration",
+    "authoringEnv": "Creation Environment",
+    "trigger": "Trigger Event",
+    "noticeSetting": "Notification Configuration",
+    "baseSetting": "Basic Settings",
+    "MODEL": "UI Mode",
+    "YAML": "Code Mode",
     "tabs": {
       "flow": "Flow",
       "template": "Template"
@@ -69,7 +76,17 @@
       "addTo": "Add to",
       "copyCreationFlow": "Copy Creation Flow",
       "saveAsTemplate": "Save as Template",
-      "delete": "Delete"
+      "delete": "Delete",
+      "orchestrateFromScratch": "Orchestrate from Scratch",
+      "mode": "Mode",
+      "freeMode": "Free Mode",
+      "constraintMode": "Constraint Mode",
+      "cloneTemplateSettings": "Clone Template Settings",
+      "notificationSettings": "Notification Settings",
+      "concurrencyPolicy": "Concurrency Policy",
+      "tag": "Tag",
+      "blankTemplateNoOrchestration": "No orchestration in blank template",
+      "createToAddFirstStage": "Start by adding the first Stage after creation"
     }
   }
 }
