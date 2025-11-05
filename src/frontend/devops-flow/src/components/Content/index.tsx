@@ -18,7 +18,13 @@ export const Content = defineComponent({
     SvgIcon,
     ImportFlowPopup,
   },
-  setup() {
+  props: {
+    groupId: {
+      type: String,
+      default: '',
+    },
+  },
+  setup(props) {
     const { t } = useI18n();
     const route = useRoute();
     const router = useRouter();
