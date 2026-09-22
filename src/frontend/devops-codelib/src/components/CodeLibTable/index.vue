@@ -154,7 +154,7 @@
                 prop="updatedTime"
             >
                 <template slot-scope="props">
-                    {{ prettyDateTimeFormat(Number(props.row.updatedTime + '000')) }}
+                    <time-display :value="props.row.updatedTime" />
                 </template>
             </bk-table-column>
             <bk-table-column
@@ -242,8 +242,7 @@
 
 <script>
     import {
-        getOffset,
-        prettyDateTimeFormat
+        getOffset
     } from '@/utils/'
     import { RESOURCE_ACTION, RESOURCE_TYPE } from '@/utils/permission'
     import { mapActions, mapState } from 'vuex'
@@ -256,11 +255,13 @@
     } from '../../config/'
     import EmptyTableStatus from '../empty-table-status.vue'
     import UsingPipelinesDialog from '../UsingPipelinesDialog.vue'
-    
+    import TimeDisplay from '../../../../common-lib/time-display'
+
     export default {
         components: {
             EmptyTableStatus,
-            UsingPipelinesDialog
+            UsingPipelinesDialog,
+            TimeDisplay
         },
         props: {
             switchPage: {
@@ -496,7 +497,6 @@
             getkeyByValue (obj, value) {
                 return Object.keys(obj).find(key => obj[key] === value)
             },
-            prettyDateTimeFormat,
 
             /**
              * @desc 计算表格高度
