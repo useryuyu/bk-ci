@@ -301,7 +301,7 @@ const stageTitleTips = computed(() => {
     ? ""
     : formatRangeTime(props.stage?.startTime, props.stage?.endTime);
   if (!timeRange) {
-    return { delay: [300, 0], content: stageTitle.value };
+    return { delay: [300, 0], content: stageTitle.value, allowHTML: false };
   }
   const runningLabel = props.stage?.endTime ? "" : ` ${t("started")}`;
   return {
